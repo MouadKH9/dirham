@@ -46,3 +46,9 @@ web-build/
 
 # Claude memory (local only)
 .claude/
+
+# Git worktrees
+.worktrees/
+
+# Superpowers brainstorm sessions
+.superpowers/
