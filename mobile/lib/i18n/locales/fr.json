@@ -1,0 +1,112 @@
+{
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "retry": "Réessayer",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "seeAll": "Voir tout",
+    "add": "Ajouter",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "back": "Retour"
+  },
+  "auth": {
+    "welcome": "Bienvenue sur Dirham",
+    "welcomeSubtitle": "Gérez vos finances au Maroc",
+    "login": "Se connecter",
+    "register": "Créer un compte",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "noAccount": "Pas de compte ?",
+    "hasAccount": "Déjà un compte ?",
+    "language": "Langue",
+    "logout": "Se déconnecter",
+    "logoutConfirm": "Voulez-vous vous déconnecter ?",
+    "emailPlaceholder": "votre@email.com",
+    "passwordPlaceholder": "Min. 8 caractères",
+    "invalidEmail": "Adresse e-mail invalide",
+    "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "loginError": "Email ou mot de passe incorrect",
+    "registerError": "Erreur lors de la création du compte"
+  },
+  "dashboard": {
+    "title": "Accueil",
+    "totalBalance": "Solde total",
+    "monthlyIncome": "Revenus",
+    "monthlyExpense": "Dépenses",
+    "netBalance": "Solde net",
+    "recentTransactions": "Transactions récentes",
+    "noTransactions": "Aucune transaction",
+    "addFirst": "Ajoutez votre première transaction"
+  },
+  "transactions": {
+    "title": "Transactions",
+    "add": "Ajouter une transaction",
+    "income": "Revenu",
+    "expense": "Dépense",
+    "bill": "Facture",
+    "all": "Tout",
+    "noTransactions": "Aucune transaction",
+    "noResults": "Aucun résultat",
+    "clearFilters": "Effacer les filtres",
+    "search": "Rechercher...",
+    "filters": "Filtres",
+    "amount": "Montant",
+    "category": "Catégorie",
+    "account": "Compte",
+    "date": "Date",
+    "notes": "Notes (optionnel)",
+    "moreDetails": "Plus de détails",
+    "deleteConfirm": "Supprimer cette transaction ?",
+    "deleteSuccess": "Transaction supprimée"
+  },
+  "accounts": {
+    "title": "Comptes",
+    "totalBalance": "Solde total",
+    "add": "Nouveau compte",
+    "name": "Nom du compte",
+    "currency": "Devise",
+    "initialBalance": "Solde initial",
+    "type": {
+      "manual": "Manuel",
+      "synced": "Synchronisé"
+    },
+    "namePlaceholder": "Ex: CIH, Cash, Payoneer"
+  },
+  "categories": {
+    "title": "Catégories",
+    "system": "Système",
+    "custom": "Personnalisées",
+    "add": "Nouvelle catégorie",
+    "nameFr": "Nom en français",
+    "nameAr": "Nom en arabe (optionnel)",
+    "nameEn": "Nom en anglais (optionnel)",
+    "icon": "Icône",
+    "nameFrPlaceholder": "Ex: Voiture"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "language": "Langue",
+    "currencyDisplay": "Affichage de la devise",
+    "currencyMAD": "MAD (officiel)",
+    "currencyDH": "DH (courant)",
+    "version": "Version",
+    "languages": {
+      "fr": "Français",
+      "ar": "العربية",
+      "en": "English"
+    },
+    "restartRequired": "Redémarrage requis",
+    "restartMessage": "Veuillez redémarrer l'application pour activer la langue arabe."
+  },
+  "more": {
+    "title": "Plus"
+  }
+}
