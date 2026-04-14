@@ -1,5 +1,3 @@
-import { StyleSheet } from 'react-native';
-
 export const fontSizes = {
   caption: 12,
   body: 14,
