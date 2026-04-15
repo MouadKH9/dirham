@@ -48,7 +48,8 @@
     "addFirst": "Ajoutez votre première transaction",
     "viewAll": "Voir tout",
     "incomeArrow": "↑ Revenus",
-    "expenseArrow": "↓ Dépenses"
+    "expenseArrow": "↓ Dépenses",
+    "loadError": "Une erreur est survenue"
   },
   "transactions": {
     "title": "Transactions",

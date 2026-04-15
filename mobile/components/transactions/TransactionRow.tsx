@@ -24,9 +24,8 @@ function formatDate(dateStr: string): string {
 export function TransactionRow({ transaction }: TransactionRowProps) {
   const currencyDisplay = useSettingsStore((s) => s.currencyDisplay);
 
-  // Direct state reads to avoid re-render overhead
-  const categories = useCategoriesStore.getState().categories;
-  const accounts = useAccountsStore.getState().accounts;
+  const categories = useCategoriesStore((s) => s.categories);
+  const accounts = useAccountsStore((s) => s.accounts);
 
   const category = categories.find((c) => c.id === transaction.category);
   const account = accounts.find((a) => a.id === transaction.account);

@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { Card, Text, AmountText } from '@/components/ui';
 import { colors } from '@/lib/theme/colors';
 import { spacing } from '@/lib/theme/spacing';
@@ -22,6 +23,7 @@ function formatMonth(month: string): string {
 }
 
 export function MonthlySummary({ summary }: MonthlySummaryProps) {
+  const { t } = useTranslation('dashboard');
   const currencyDisplay = useSettingsStore((s) => s.currencyDisplay);
   const net = parseFloat(summary.net);
   const netType = net >= 0 ? 'income' : 'expense';
@@ -31,7 +33,7 @@ export function MonthlySummary({ summary }: MonthlySummaryProps) {
       <View style={styles.header}>
         <Text variant="h3">{formatMonth(summary.month)}</Text>
         <Text variant="caption" color={colors.textSecondary}>
-          Ce mois
+          {t('thisMonth')}
         </Text>
       </View>
       <View style={styles.columnsRow}>
@@ -43,7 +45,7 @@ export function MonthlySummary({ summary }: MonthlySummaryProps) {
             variant="small"
           />
           <Text variant="caption" color={colors.textSecondary} style={styles.columnLabel}>
-            Revenus
+            {t('monthlyIncome')}
           </Text>
         </View>
         <View style={styles.divider} />
@@ -55,7 +57,7 @@ export function MonthlySummary({ summary }: MonthlySummaryProps) {
             variant="small"
           />
           <Text variant="caption" color={colors.textSecondary} style={styles.columnLabel}>
-            Dépenses
+            {t('monthlyExpense')}
           </Text>
         </View>
         <View style={styles.divider} />
@@ -67,7 +69,7 @@ export function MonthlySummary({ summary }: MonthlySummaryProps) {
             variant="small"
           />
           <Text variant="caption" color={colors.textSecondary} style={styles.columnLabel}>
-            Solde net
+            {t('netBalance')}
           </Text>
         </View>
       </View>

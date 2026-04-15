@@ -48,7 +48,8 @@
     "addFirst": "أضف معاملتك الأولى",
     "viewAll": "عرض الكل",
     "incomeArrow": "↑ الدخل",
-    "expenseArrow": "↓ المصروفات"
+    "expenseArrow": "↓ المصروفات",
+    "loadError": "حدث خطأ ما"
   },
   "transactions": {
     "title": "المعاملات",

@@ -48,7 +48,8 @@
     "addFirst": "Add your first transaction",
     "viewAll": "See all",
     "incomeArrow": "↑ Income",
-    "expenseArrow": "↓ Expenses"
+    "expenseArrow": "↓ Expenses",
+    "loadError": "Something went wrong"
   },
   "transactions": {
     "title": "Transactions",

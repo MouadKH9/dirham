@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { Card, Text } from '@/components/ui';
 import { TransactionRow } from '@/components/transactions/TransactionRow';
 import { colors } from '@/lib/theme/colors';
@@ -12,15 +13,16 @@ interface RecentTransactionsProps {
 }
 
 export function RecentTransactions({ transactions, onViewAll }: RecentTransactionsProps) {
+  const { t } = useTranslation('dashboard');
   const recent = transactions.slice(0, 5);
 
   return (
     <Card style={styles.card}>
       <View style={styles.header}>
-        <Text variant="h3">Transactions récentes</Text>
+        <Text variant="h3">{t('recentTransactions')}</Text>
         <TouchableOpacity onPress={onViewAll} activeOpacity={0.7}>
           <Text variant="caption" color={colors.terracotta} style={styles.viewAll}>
-            Voir tout
+            {t('viewAll')}
           </Text>
         </TouchableOpacity>
       </View>
@@ -28,7 +30,7 @@ export function RecentTransactions({ transactions, onViewAll }: RecentTransactio
       {recent.length === 0 ? (
         <View style={styles.empty}>
           <Text variant="body" color={colors.textSecondary}>
-            Aucune transaction
+            {t('noTransactions')}
           </Text>
         </View>
       ) : (
