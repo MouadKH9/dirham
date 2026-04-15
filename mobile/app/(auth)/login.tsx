@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -19,13 +19,24 @@ import { spacing } from '@/lib/theme/spacing';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { login, isLoading, error } = useAuthStore();
+  const { login, isSubmitting, error, clearError } = useAuthStore();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const isMountedRef = useRef(true);
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => { isMountedRef.current = false; };
+  }, []);
+
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
+
   const handleLogin = async () => {
     await login(email, password);
+    if (!isMountedRef.current) return;
     const { isAuthenticated } = useAuthStore.getState();
     if (isAuthenticated) {
       router.replace('/(tabs)');
@@ -78,7 +89,7 @@ export default function LoginScreen() {
 
         <Button
           onPress={handleLogin}
-          loading={isLoading}
+          loading={isSubmitting}
           style={styles.submitButton}
         >
           Se connecter

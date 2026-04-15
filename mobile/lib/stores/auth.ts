@@ -7,7 +7,8 @@ import type { User } from '@/lib/types';
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
-  isLoading: boolean; // true during initial checkAuth
+  isLoading: boolean; // true ONLY during initial checkAuth bootstrap
+  isSubmitting: boolean; // true during login/register form submission
   error: string | null;
 
   // Actions
@@ -16,6 +17,7 @@ interface AuthState {
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
   updateUser: (data: Partial<User>) => void;
+  clearError: () => void;
   _clearAuth: () => void; // Called by api/client on refresh failure
 }
 
@@ -23,6 +25,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isAuthenticated: false,
   isLoading: true,
+  isSubmitting: false,
   error: null,
 
   checkAuth: async () => {
@@ -55,32 +58,32 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   login: async (email, password) => {
-    set({ error: null, isLoading: true });
+    set({ error: null, isSubmitting: true });
     try {
       const { user, tokens } = await authApi.login(email, password);
       await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, tokens.access);
       await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, tokens.refresh);
       await SecureStore.setItemAsync('dirham_user', JSON.stringify(user));
       apiClient.defaults.headers.common.Authorization = `Bearer ${tokens.access}`;
-      set({ user, isAuthenticated: true, isLoading: false });
+      set({ user, isAuthenticated: true, isSubmitting: false });
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erreur de connexion';
-      set({ isLoading: false, error: message });
+      set({ isSubmitting: false, error: message });
     }
   },
 
   register: async (email, password, language = 'fr') => {
-    set({ error: null, isLoading: true });
+    set({ error: null, isSubmitting: true });
     try {
       const { user, tokens } = await authApi.register(email, password, language);
       await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, tokens.access);
       await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, tokens.refresh);
       await SecureStore.setItemAsync('dirham_user', JSON.stringify(user));
       apiClient.defaults.headers.common.Authorization = `Bearer ${tokens.access}`;
-      set({ user, isAuthenticated: true, isLoading: false });
+      set({ user, isAuthenticated: true, isSubmitting: false });
     } catch (err) {
       const message = err instanceof Error ? err.message : "Erreur lors de l'inscription";
-      set({ isLoading: false, error: message });
+      set({ isSubmitting: false, error: message });
     }
   },
 
@@ -99,6 +102,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   updateUser: (data) => set((state) => ({ user: state.user ? { ...state.user, ...data } : null })),
+
+  clearError: () => set({ error: null }),
 
   _clearAuth: () => set({ user: null, isAuthenticated: false }),
 }));

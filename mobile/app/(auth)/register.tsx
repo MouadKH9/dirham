@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -19,12 +19,22 @@ import { spacing } from '@/lib/theme/spacing';
 
 export default function RegisterScreen() {
   const router = useRouter();
-  const { register, isLoading, error } = useAuthStore();
+  const { register, isSubmitting, error, clearError } = useAuthStore();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState<string | null>(null);
+
+  const isMountedRef = useRef(true);
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => { isMountedRef.current = false; };
+  }, []);
+
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
 
   const handleRegister = async () => {
     if (password !== confirmPassword) {
@@ -33,6 +43,7 @@ export default function RegisterScreen() {
     }
     setPasswordError(null);
     await register(email, password);
+    if (!isMountedRef.current) return;
     const { isAuthenticated } = useAuthStore.getState();
     if (isAuthenticated) {
       router.replace('/(tabs)');
@@ -96,7 +107,7 @@ export default function RegisterScreen() {
 
         <Button
           onPress={handleRegister}
-          loading={isLoading}
+          loading={isSubmitting}
           style={styles.submitButton}
         >
           Créer un compte

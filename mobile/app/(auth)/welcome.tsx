@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
+import { useTranslation } from 'react-i18next';
 import { ZelligeHeader } from '@/components/ui/ZelligeHeader';
 import { Button } from '@/components/ui/Button';
 import { colors } from '@/lib/theme/colors';
@@ -26,11 +28,13 @@ const LANGUAGES = [
 
 export default function WelcomeScreen() {
   const router = useRouter();
+  const { t } = useTranslation('auth');
   const [activeLang, setActiveLang] = React.useState<string>(i18n.language ?? 'fr');
 
-  const handleLanguageChange = (code: string) => {
+  const handleLanguageChange = async (code: string) => {
     setActiveLang(code);
-    i18n.changeLanguage(code);
+    await i18n.changeLanguage(code);
+    await SecureStore.setItemAsync('dirham_language', code);
   };
 
   return (
@@ -40,7 +44,7 @@ export default function WelcomeScreen() {
         <View style={styles.headerContent}>
           <Text style={styles.arabic}>دِرْهَم</Text>
           <Text style={styles.title}>DIRHAM</Text>
-          <Text style={styles.tagline}>Gérez vos finances au Maroc</Text>
+          <Text style={styles.tagline}>{t('welcomeSubtitle')}</Text>
         </View>
       </ZelligeHeader>
 
@@ -55,14 +59,14 @@ export default function WelcomeScreen() {
             variant="primary"
             style={styles.button}
           >
-            Se connecter
+            {t('login')}
           </Button>
           <Button
             onPress={() => router.push('/(auth)/register')}
             variant="secondary"
             style={styles.button}
           >
-            Créer un compte
+            {t('register')}
           </Button>
         </View>
 

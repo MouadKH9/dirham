@@ -10,7 +10,7 @@ export default function TabsLayout() {
   const fetchAccounts = useAccountsStore((s) => s.fetchAccounts);
 
   useEffect(() => {
-    Promise.all([fetchCategories(), fetchAccounts()]);
+    void Promise.all([fetchCategories(), fetchAccounts()]);
   }, [fetchCategories, fetchAccounts]);
 
   return (
