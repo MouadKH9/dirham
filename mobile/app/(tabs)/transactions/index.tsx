@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Pressable,
   RefreshControl,
   SectionList,
   StyleSheet,
@@ -108,16 +109,15 @@ function SwipeableRow({ transaction, onDelete }: SwipeableRowProps) {
     );
   };
 
-  const renderRightActions = () => (
-    <View style={swipeStyles.deleteAction}>
+  const renderRightActions = useCallback(() => (
+    <Pressable style={swipeStyles.deleteAction} onPress={handleDelete}>
       <Text style={swipeStyles.deleteText}>{t('common.delete')}</Text>
-    </View>
-  );
+    </Pressable>
+  ), [handleDelete, t]);
 
   return (
     <Swipeable
       renderRightActions={renderRightActions}
-      onSwipeableOpen={handleDelete}
       rightThreshold={80}
       overshootRight={false}
     >
@@ -243,9 +243,8 @@ export default function TransactionsScreen() {
   const handleDelete = useCallback(
     async (id: string) => {
       await deleteTransaction(id);
-      void fetchTransactions(true);
     },
-    [deleteTransaction, fetchTransactions],
+    [deleteTransaction],
   );
 
   // Render helpers
@@ -335,6 +334,7 @@ export default function TransactionsScreen() {
         onApply={handleApplyFilters}
         accounts={accounts}
         categories={categories}
+        activeFilters={{ account: filters.account, category: filters.category }}
       />
     </SafeAreaView>
   );

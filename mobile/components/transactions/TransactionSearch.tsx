@@ -18,6 +18,13 @@ export function TransactionSearch({ onSearch, value }: TransactionSearchProps) {
     setLocalValue(value);
   }, [value]);
 
+  // Clean up debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
   const handleChange = (text: string) => {
     setLocalValue(text);
     if (timerRef.current) clearTimeout(timerRef.current);

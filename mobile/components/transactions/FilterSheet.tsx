@@ -15,9 +15,10 @@ interface FilterSheetProps {
   onApply: (filters: Partial<TransactionFilters>) => void;
   accounts: Account[];
   categories: Category[];
+  activeFilters?: { account?: string; category?: string };
 }
 
-export function FilterSheet({ isOpen, onClose, onApply, accounts, categories }: FilterSheetProps) {
+export function FilterSheet({ isOpen, onClose, onApply, accounts, categories, activeFilters }: FilterSheetProps) {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ['55%'], []);
 
@@ -31,6 +32,12 @@ export function FilterSheet({ isOpen, onClose, onApply, accounts, categories }: 
       bottomSheetRef.current?.close();
     }
   }, [isOpen]);
+
+  // Sync local state when external filters are cleared or changed
+  useEffect(() => {
+    setSelectedAccount(activeFilters?.account ?? null);
+    setSelectedCategory(activeFilters?.category ?? null);
+  }, [activeFilters?.account, activeFilters?.category]);
 
   const handleSheetChange = useCallback(
     (index: number) => {
