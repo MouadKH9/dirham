@@ -84,12 +84,21 @@
   "accounts": {
     "title": "الحسابات",
     "totalBalance": "الرصيد الإجمالي",
+    "patrimoine": "إجمالي الأصول",
     "add": "حساب جديد",
+    "createTitle": "حساب جديد",
+    "create": "إنشاء الحساب",
     "name": "اسم الحساب",
     "currency": "العملة",
     "initialBalance": "الرصيد الأولي",
     "type": { "manual": "يدوي", "synced": "متزامن" },
-    "namePlaceholder": "مثال: CIH، نقدي، Payoneer"
+    "namePlaceholder": "مثال: CIH، نقدي، Payoneer",
+    "notFound": "الحساب غير موجود",
+    "notFoundDesc": "هذا الحساب غير موجود أو تم حذفه.",
+    "goBack": "العودة إلى الحسابات",
+    "noTransactions": "لا توجد معاملات",
+    "nameRequired": "الاسم مطلوب",
+    "createError": "خطأ في إنشاء الحساب"
   },
   "categories": {
     "title": "الفئات",

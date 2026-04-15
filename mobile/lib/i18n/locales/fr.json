@@ -84,7 +84,10 @@
   "accounts": {
     "title": "Comptes",
     "totalBalance": "Solde total",
+    "patrimoine": "Patrimoine total",
     "add": "Nouveau compte",
+    "createTitle": "Nouveau compte",
+    "create": "Créer le compte",
     "name": "Nom du compte",
     "currency": "Devise",
     "initialBalance": "Solde initial",
@@ -92,7 +95,13 @@
       "manual": "Manuel",
       "synced": "Synchronisé"
     },
-    "namePlaceholder": "Ex: CIH, Cash, Payoneer"
+    "namePlaceholder": "Ex: CIH, Cash, Payoneer",
+    "notFound": "Compte introuvable",
+    "notFoundDesc": "Ce compte n'existe pas ou a été supprimé.",
+    "goBack": "Retour aux comptes",
+    "noTransactions": "Aucune transaction",
+    "nameRequired": "Le nom est requis",
+    "createError": "Erreur lors de la création du compte"
   },
   "categories": {
     "title": "Catégories",

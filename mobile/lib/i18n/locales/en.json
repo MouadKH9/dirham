@@ -84,12 +84,21 @@
   "accounts": {
     "title": "Accounts",
     "totalBalance": "Total balance",
+    "patrimoine": "Total patrimony",
     "add": "New account",
+    "createTitle": "New account",
+    "create": "Create account",
     "name": "Account name",
     "currency": "Currency",
     "initialBalance": "Initial balance",
     "type": { "manual": "Manual", "synced": "Synced" },
-    "namePlaceholder": "E.g: CIH, Cash, Payoneer"
+    "namePlaceholder": "E.g: CIH, Cash, Payoneer",
+    "notFound": "Account not found",
+    "notFoundDesc": "This account doesn't exist or was deleted.",
+    "goBack": "Back to accounts",
+    "noTransactions": "No transactions",
+    "nameRequired": "Name is required",
+    "createError": "Error creating account"
   },
   "categories": {
     "title": "Categories",
