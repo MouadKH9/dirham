@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import {
   ActivityIndicator,
   RefreshControl,
@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
 import { Text, AmountText, Button } from '@/components/ui';
@@ -37,14 +37,20 @@ export default function AccountDetailScreen() {
   const fetchTransactions = useTransactionsStore((s) => s.fetchTransactions);
   const loadMore = useTransactionsStore((s) => s.loadMore);
   const setFilters = useTransactionsStore((s) => s.setFilters);
+  const clearFilters = useTransactionsStore((s) => s.clearFilters);
 
   const [isRefreshing, setIsRefreshing] = React.useState(false);
 
-  useEffect(() => {
-    if (!id) return;
-    setFilters({ account: id });
-    void fetchTransactions(true);
-  }, [id]);
+  useFocusEffect(
+    useCallback(() => {
+      if (!id) return;
+      setFilters({ account: id });
+      void fetchTransactions(true);
+      return () => {
+        clearFilters();
+      };
+    }, [id, setFilters, fetchTransactions, clearFilters]),
+  );
 
   const sections = useGroupedTransactions(transactions);
 
