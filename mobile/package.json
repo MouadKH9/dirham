@@ -30,7 +30,8 @@
     "axios": "^1.7.9",
     "react-i18next": "^15.4.1",
     "i18next": "^24.2.3",
-    "@expo/vector-icons": "^14.0.4"
+    "@expo/vector-icons": "^14.0.4",
+    "@expo-google-fonts/inter": "^0.2.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.0",
