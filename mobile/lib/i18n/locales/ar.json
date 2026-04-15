@@ -70,7 +70,16 @@
     "notes": "ملاحظات (اختياري)",
     "moreDetails": "مزيد من التفاصيل",
     "deleteConfirm": "هل تريد حذف هذه المعاملة؟",
-    "deleteSuccess": "تم حذف المعاملة"
+    "deleteSuccess": "تم حذف المعاملة",
+    "deleteConfirmTitle": "حذف",
+    "deleteConfirmMessage": "هل تريد حذف هذه المعاملة؟",
+    "expenses": "المصروفات",
+    "revenues": "الدخل",
+    "allAccounts": "جميع الحسابات",
+    "allCategories": "جميع الفئات",
+    "apply": "تطبيق",
+    "reset": "إعادة تعيين",
+    "noTransactionsWithFilters": "لا توجد معاملات بهذه الفلاتر"
   },
   "accounts": {
     "title": "الحسابات",

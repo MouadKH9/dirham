@@ -70,7 +70,16 @@
     "notes": "Notes (optionnel)",
     "moreDetails": "Plus de détails",
     "deleteConfirm": "Supprimer cette transaction ?",
-    "deleteSuccess": "Transaction supprimée"
+    "deleteSuccess": "Transaction supprimée",
+    "deleteConfirmTitle": "Supprimer",
+    "deleteConfirmMessage": "Voulez-vous supprimer cette transaction ?",
+    "expenses": "Dépenses",
+    "revenues": "Revenus",
+    "allAccounts": "Tous les comptes",
+    "allCategories": "Toutes les catégories",
+    "apply": "Appliquer",
+    "reset": "Réinitialiser",
+    "noTransactionsWithFilters": "Aucune transaction avec ces filtres"
   },
   "accounts": {
     "title": "Comptes",
