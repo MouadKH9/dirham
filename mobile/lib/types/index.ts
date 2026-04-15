@@ -24,6 +24,7 @@ export interface Category {
   name_ar: string;
   name_en: string;
   icon: string;
+  type?: 'income' | 'expense' | 'bill';
   is_system: boolean;
   is_archived: boolean;
 }
