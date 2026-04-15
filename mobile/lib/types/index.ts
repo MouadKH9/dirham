@@ -68,7 +68,7 @@ export interface BudgetProgress {
   remaining: string;
 }
 
-export interface DashboardData {
+export interface DashboardResponse {
   accounts: Account[];
   recent_transactions: Transaction[];
   monthly_summary: MonthlySummary;

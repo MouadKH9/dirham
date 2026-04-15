@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 import { dashboardApi } from '@/lib/api/dashboard';
-import type { DashboardData } from '@/lib/types';
+import type { DashboardResponse } from '@/lib/types';
 
 interface DashboardState {
-  data: DashboardData | null;
+  data: DashboardResponse | null;
   isLoading: boolean;
   error: string | null;
 

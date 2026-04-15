@@ -35,11 +35,10 @@ apiClient.interceptors.request.use(async (config: InternalAxiosRequestConfig) =>
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-  // Language will be set dynamically by the settings store
-  // Default to 'fr' here as fallback
-  if (!config.headers['Accept-Language']) {
-    config.headers['Accept-Language'] = 'fr';
-  }
+  // Read language from settings store at request time so it always reflects the current preference
+  const { useSettingsStore } = await import('@/lib/stores/settings');
+  const language = useSettingsStore.getState().language;
+  config.headers['Accept-Language'] = language || 'fr';
   return config;
 });
 
@@ -90,6 +89,7 @@ apiClient.interceptors.response.use(
       // Clear tokens and trigger logout
       await SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY);
       await SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY);
+      await SecureStore.deleteItemAsync('dirham_user').catch(() => {});
       // Import dynamically to avoid circular dependency
       const { useAuthStore } = await import('@/lib/stores/auth');
       useAuthStore.getState()._clearAuth();
