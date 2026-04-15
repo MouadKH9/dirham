@@ -20,9 +20,9 @@ export default function TabsLayout() {
         screenOptions={{ headerShown: false }}
       >
         <Tabs.Screen name="index" options={{ title: 'Accueil' }} />
-        <Tabs.Screen name="transactions/index" options={{ title: 'Transactions' }} />
-        <Tabs.Screen name="accounts/index" options={{ title: 'Comptes' }} />
-        <Tabs.Screen name="more/index" options={{ title: 'Plus' }} />
+        <Tabs.Screen name="transactions" options={{ title: 'Transactions' }} />
+        <Tabs.Screen name="accounts" options={{ title: 'Comptes' }} />
+        <Tabs.Screen name="more" options={{ title: 'Plus' }} />
       </Tabs>
       <AddTransactionSheet />
     </>

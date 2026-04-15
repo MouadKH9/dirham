@@ -21,9 +21,9 @@ interface TabConfig {
 
 const TAB_CONFIGS: TabConfig[] = [
   { name: 'index', label: 'Accueil', icon: 'home-outline', activeIcon: 'home' },
-  { name: 'transactions/index', label: 'Transactions', icon: 'list-outline', activeIcon: 'list' },
-  { name: 'accounts/index', label: 'Comptes', icon: 'wallet-outline', activeIcon: 'wallet' },
-  { name: 'more/index', label: 'Plus', icon: 'ellipsis-horizontal-outline', activeIcon: 'ellipsis-horizontal' },
+  { name: 'transactions', label: 'Transactions', icon: 'list-outline', activeIcon: 'list' },
+  { name: 'accounts', label: 'Comptes', icon: 'wallet-outline', activeIcon: 'wallet' },
+  { name: 'more', label: 'Plus', icon: 'ellipsis-horizontal-outline', activeIcon: 'ellipsis-horizontal' },
 ];
 
 export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
