@@ -124,8 +124,9 @@ export function AddTransactionSheet() {
       await fetchDashboard();
       closeAddTransaction();
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    } catch {
-      // Error handled via store — just stop loading
+    } catch (err) {
+      // Log for debugging; UI stays open so user can retry
+      if (__DEV__) console.warn('AddTransactionSheet submit error:', err);
     } finally {
       setIsSubmitting(false);
     }
@@ -153,7 +154,7 @@ export function AddTransactionSheet() {
   }, [categories, type]);
 
   const activeColor = type === 'expense' ? colors.terracotta : colors.emerald;
-  const canSubmit = parseFloat(amount) > 0 && !!categoryId && !isSubmitting;
+  const canSubmit = parseFloat(amount) > 0 && !!categoryId && !!accountId && !isSubmitting;
   const selectedAccount = accounts.find((a) => a.id === accountId);
   const isExpanded = currentSnap === 1;
 
