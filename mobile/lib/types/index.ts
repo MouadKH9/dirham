@@ -69,6 +69,7 @@ export interface BudgetProgress {
 }
 
 export interface DashboardResponse {
+  total_balance?: string;
   accounts: Account[];
   recent_transactions: Transaction[];
   monthly_summary: MonthlySummary;

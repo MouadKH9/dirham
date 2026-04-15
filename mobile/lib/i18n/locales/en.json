@@ -42,9 +42,13 @@
     "monthlyIncome": "Income",
     "monthlyExpense": "Expenses",
     "netBalance": "Net Balance",
+    "thisMonth": "This month",
     "recentTransactions": "Recent Transactions",
     "noTransactions": "No transactions",
-    "addFirst": "Add your first transaction"
+    "addFirst": "Add your first transaction",
+    "viewAll": "See all",
+    "incomeArrow": "↑ Income",
+    "expenseArrow": "↓ Expenses"
   },
   "transactions": {
     "title": "Transactions",

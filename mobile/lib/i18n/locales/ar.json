@@ -42,9 +42,13 @@
     "monthlyIncome": "الدخل",
     "monthlyExpense": "المصروفات",
     "netBalance": "الرصيد الصافي",
+    "thisMonth": "هذا الشهر",
     "recentTransactions": "المعاملات الأخيرة",
     "noTransactions": "لا توجد معاملات",
-    "addFirst": "أضف معاملتك الأولى"
+    "addFirst": "أضف معاملتك الأولى",
+    "viewAll": "عرض الكل",
+    "incomeArrow": "↑ الدخل",
+    "expenseArrow": "↓ المصروفات"
   },
   "transactions": {
     "title": "المعاملات",
