@@ -58,10 +58,21 @@ export const useTransactionsStore = create<TransactionsState>((set, get) => ({
   },
 
   loadMore: async () => {
-    const { hasMore, isLoadingMore, isLoading } = get();
-    if (!hasMore || isLoadingMore || isLoading) return;
-    set((state) => ({ isLoadingMore: true, page: state.page + 1 }));
-    await get().fetchTransactions(false);
+    const { isLoading, isLoadingMore, hasMore, page, filters } = get();
+    if (isLoading || isLoadingMore || !hasMore) return;
+    const nextPage = page + 1;
+    set({ isLoadingMore: true, page: nextPage });
+    try {
+      const response = await transactionsApi.list({ ...filters, page: nextPage, page_size: PAGE_SIZE });
+      set((state) => ({
+        transactions: [...state.transactions, ...response.results],
+        count: response.count,
+        hasMore: !!response.next,
+        isLoadingMore: false,
+      }));
+    } catch {
+      set({ isLoadingMore: false });
+    }
   },
 
   setFilters: (newFilters) => {

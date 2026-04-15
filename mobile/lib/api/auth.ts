@@ -1,14 +1,5 @@
-import axios from 'axios';
-import { apiClient, API_BASE_URL } from './client';
+import { apiClient } from './client';
 import type { AuthTokens, User } from '@/lib/types';
-
-// Plain axios instance for refresh — avoids triggering the 401 interceptor
-const plainAxios = axios.create({ baseURL: API_BASE_URL });
-
-export async function refreshToken(refresh: string): Promise<{ access: string; refresh: string }> {
-  const response = await plainAxios.post<{ access: string; refresh: string }>('/auth/refresh/', { refresh });
-  return response.data;
-}
 
 export interface AuthResponse {
   user: User;

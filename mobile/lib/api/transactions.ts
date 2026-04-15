@@ -1,13 +1,5 @@
 import { apiClient } from './client';
-import type { CreateTransactionInput, PaginatedResponse, Transaction, TransactionFilters } from '@/lib/types';
-
-export interface TransactionSummary {
-  income: string;
-  expense: string;
-  bill: string;
-  net: string;
-  month: string;
-}
+import type { CreateTransactionInput, MonthlySummary, PaginatedResponse, Transaction, TransactionFilters } from '@/lib/types';
 
 export const transactionsApi = {
   async list(filters: TransactionFilters = {}): Promise<PaginatedResponse<Transaction>> {
@@ -45,9 +37,9 @@ export const transactionsApi = {
     await apiClient.delete(`/transactions/${id}/`);
   },
 
-  async summary(month?: string): Promise<TransactionSummary> {
+  async summary(month?: string): Promise<MonthlySummary> {
     const params = month ? { month } : {};
-    const response = await apiClient.get<TransactionSummary>('/transactions/summary/', { params });
+    const response = await apiClient.get<MonthlySummary>('/transactions/summary/', { params });
     return response.data;
   },
 };

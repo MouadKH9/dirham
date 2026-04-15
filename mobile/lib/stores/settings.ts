@@ -11,7 +11,7 @@ interface SettingsState {
   currencyDisplay: CurrencyDisplay;
 
   setLanguage: (lang: Language) => Promise<void>;
-  setCurrencyDisplay: (display: CurrencyDisplay) => void;
+  setCurrencyDisplay: (display: CurrencyDisplay) => Promise<void>;
   loadSettings: () => Promise<void>;
 }
 
@@ -46,9 +46,9 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     await SecureStore.setItemAsync(SETTINGS_KEY, JSON.stringify({ language: lang, currencyDisplay }));
   },
 
-  setCurrencyDisplay: (display) => {
+  setCurrencyDisplay: async (display) => {
     set({ currencyDisplay: display });
     const { language } = get();
-    SecureStore.setItemAsync(SETTINGS_KEY, JSON.stringify({ language, currencyDisplay: display }));
+    await SecureStore.setItemAsync(SETTINGS_KEY, JSON.stringify({ language, currencyDisplay: display }));
   },
 }));

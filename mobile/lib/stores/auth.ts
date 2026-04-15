@@ -32,42 +32,56 @@ export const useAuthStore = create<AuthState>((set) => ({
         set({ isAuthenticated: false, isLoading: false });
         return;
       }
-      // Set token on client and try to fetch dashboard to validate
+      // Set token on client and validate with lightweight /auth/me/ endpoint
       apiClient.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
-      // Try a lightweight call — if it fails, the interceptor will attempt refresh
-      const { dashboardApi } = await import('@/lib/api/dashboard');
-      await dashboardApi.get();
-      // If we get here, token is valid — we don't have user object from this endpoint
-      // so we reconstruct minimal user from secure store if saved
+      const meResponse = await apiClient.get<User>('/auth/me/');
+      const freshUser = meResponse.data;
+
+      // Also try to load saved user from SecureStore (for display while in flight)
       const savedUser = await SecureStore.getItemAsync('dirham_user');
       if (savedUser) {
-        set({ user: JSON.parse(savedUser), isAuthenticated: true, isLoading: false });
-      } else {
-        set({ isAuthenticated: true, isLoading: false });
+        const parsedUser = JSON.parse(savedUser);
+        if (!parsedUser?.id || !parsedUser?.email) {
+          // stale/invalid user shape, treat as unauthenticated
+          set({ isAuthenticated: false, isLoading: false });
+          return;
+        }
       }
+
+      set({ user: freshUser, isAuthenticated: true, isLoading: false });
     } catch {
       set({ isAuthenticated: false, isLoading: false });
     }
   },
 
   login: async (email, password) => {
-    set({ error: null });
-    const { user, tokens } = await authApi.login(email, password);
-    await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, tokens.access);
-    await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, tokens.refresh);
-    await SecureStore.setItemAsync('dirham_user', JSON.stringify(user));
-    apiClient.defaults.headers.common.Authorization = `Bearer ${tokens.access}`;
-    set({ user, isAuthenticated: true });
+    set({ error: null, isLoading: true });
+    try {
+      const { user, tokens } = await authApi.login(email, password);
+      await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, tokens.access);
+      await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, tokens.refresh);
+      await SecureStore.setItemAsync('dirham_user', JSON.stringify(user));
+      apiClient.defaults.headers.common.Authorization = `Bearer ${tokens.access}`;
+      set({ user, isAuthenticated: true, isLoading: false });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Erreur de connexion';
+      set({ isLoading: false, error: message });
+    }
   },
 
   register: async (email, password, language = 'fr') => {
-    set({ error: null });
-    const { user, tokens } = await authApi.register(email, password, language);
-    await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, tokens.access);
-    await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, tokens.refresh);
-    await SecureStore.setItemAsync('dirham_user', JSON.stringify(user));
-    apiClient.defaults.headers.common.Authorization = `Bearer ${tokens.access}`;
-    set({ user, isAuthenticated: true });
+    set({ error: null, isLoading: true });
+    try {
+      const { user, tokens } = await authApi.register(email, password, language);
+      await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, tokens.access);
+      await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, tokens.refresh);
+      await SecureStore.setItemAsync('dirham_user', JSON.stringify(user));
+      apiClient.defaults.headers.common.Authorization = `Bearer ${tokens.access}`;
+      set({ user, isAuthenticated: true, isLoading: false });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Erreur lors de l'inscription";
+      set({ isLoading: false, error: message });
+    }
   },
 
   logout: async () => {
