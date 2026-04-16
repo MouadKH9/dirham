@@ -98,13 +98,19 @@
     "goBack": "Back to accounts",
     "noTransactions": "No transactions",
     "nameRequired": "Name is required",
-    "createError": "Error creating account"
+    "createError": "Error creating account",
+    "empty": {
+      "title": "No accounts",
+      "description": "Create your first account to start tracking your finances."
+    }
   },
   "categories": {
     "title": "Categories",
     "system": "System",
     "custom": "Custom",
     "add": "New category",
+    "create": "Create category",
+    "emptyTitle": "No categories",
     "nameFr": "Name in French",
     "nameAr": "Name in Arabic (optional)",
     "nameEn": "Name in English (optional)",

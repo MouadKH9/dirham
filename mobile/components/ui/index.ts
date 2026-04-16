@@ -7,4 +7,5 @@ export * from './AmountText';
 export * from './ZelligeHeader';
 export * from './ScreenContainer';
 export * from './EmptyState';
+export * from './ErrorBanner';
 export * from './LoadingState';

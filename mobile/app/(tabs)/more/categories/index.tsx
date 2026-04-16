@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/lib/i18n';
 
-import { Text, Card, LoadingState } from '@/components/ui';
+import { Text, Card, LoadingState, EmptyState } from '@/components/ui';
 import { useCategoriesStore } from '@/lib/stores/categories';
 import { colors } from '@/lib/theme/colors';
 import { spacing } from '@/lib/theme/spacing';
@@ -137,10 +137,14 @@ export default function CategoriesScreen() {
           </View>
         )}
 
-        {categories.length === 0 && (
-          <Text variant="body" style={styles.empty}>
-            {t('categories.add')}
-          </Text>
+        {!isLoading && categories.length === 0 && (
+          <EmptyState
+            icon="🗂️"
+            title={t('categories.emptyTitle')}
+            description={t('categories.add')}
+            actionLabel={t('categories.create')}
+            onAction={() => router.push('/(tabs)/more/categories/create')}
+          />
         )}
       </ScrollView>
     </SafeAreaView>

@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { Card, Text, AmountText, Button, LoadingState } from '@/components/ui';
+import { Card, Text, AmountText, Button, LoadingState, EmptyState } from '@/components/ui';
 import { AccountCard } from '@/components/accounts/AccountCard';
 import { useAccountsStore } from '@/lib/stores/accounts';
 import { useSettingsStore } from '@/lib/stores/settings';
@@ -90,14 +90,27 @@ export default function AccountsScreen() {
           />
         ))}
 
+        {/* Empty state — shown when no accounts exist after loading */}
+        {!isLoading && accounts.length === 0 && (
+          <EmptyState
+            icon="🏦"
+            title={t('empty.title')}
+            description={t('empty.description')}
+            actionLabel={`+ ${t('add')}`}
+            onAction={() => router.push('/(tabs)/accounts/create')}
+          />
+        )}
+
         {/* New account button */}
-        <Button
-          onPress={() => router.push('/(tabs)/accounts/create')}
-          variant="secondary"
-          style={styles.addButton}
-        >
-          {`+ ${t('add')}`}
-        </Button>
+        {accounts.length > 0 && (
+          <Button
+            onPress={() => router.push('/(tabs)/accounts/create')}
+            variant="secondary"
+            style={styles.addButton}
+          >
+            {`+ ${t('add')}`}
+          </Button>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

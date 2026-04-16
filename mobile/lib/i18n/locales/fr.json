@@ -101,13 +101,19 @@
     "goBack": "Retour aux comptes",
     "noTransactions": "Aucune transaction",
     "nameRequired": "Le nom est requis",
-    "createError": "Erreur lors de la création du compte"
+    "createError": "Erreur lors de la création du compte",
+    "empty": {
+      "title": "Aucun compte",
+      "description": "Créez votre premier compte pour commencer à suivre vos finances."
+    }
   },
   "categories": {
     "title": "Catégories",
     "system": "Système",
     "custom": "Personnalisées",
     "add": "Nouvelle catégorie",
+    "create": "Créer une catégorie",
+    "emptyTitle": "Aucune catégorie",
     "nameFr": "Nom en français",
     "nameAr": "Nom en arabe (optionnel)",
     "nameEn": "Nom en anglais (optionnel)",
