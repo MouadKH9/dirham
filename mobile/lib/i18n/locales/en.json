@@ -123,6 +123,9 @@
     "restartMessage": "Please restart the app to activate Arabic language."
   },
   "more": {
-    "title": "More"
+    "title": "More",
+    "sectionManagement": "Management",
+    "sectionPreferences": "Preferences",
+    "sectionAccount": "Account"
   }
 }

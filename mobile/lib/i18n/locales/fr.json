@@ -130,6 +130,9 @@
     "restartMessage": "Veuillez redémarrer l'application pour activer la langue arabe."
   },
   "more": {
-    "title": "Plus"
+    "title": "Plus",
+    "sectionManagement": "Gestion",
+    "sectionPreferences": "Préférences",
+    "sectionAccount": "Compte"
   }
 }

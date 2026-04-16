@@ -58,7 +58,9 @@ export default function MoreScreen() {
           text: t('auth.logout'),
           style: 'destructive',
           onPress: () => {
-            void logout();
+            void logout().then(() => {
+              router.replace('/(auth)/welcome');
+            });
           },
         },
       ],
@@ -95,7 +97,7 @@ export default function MoreScreen() {
         {/* Gestion section */}
         <View style={styles.section}>
           <Text variant="caption" style={styles.sectionTitle}>
-            Gestion
+            {t('more.sectionManagement')}
           </Text>
           <Card style={styles.menuCard}>
             <MenuRow
@@ -109,7 +111,7 @@ export default function MoreScreen() {
         {/* Préférences section */}
         <View style={styles.section}>
           <Text variant="caption" style={styles.sectionTitle}>
-            Préférences
+            {t('more.sectionPreferences')}
           </Text>
           <Card style={styles.menuCard}>
             <MenuRow

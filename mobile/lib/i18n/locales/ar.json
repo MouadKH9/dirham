@@ -123,6 +123,9 @@
     "restartMessage": "يرجى إعادة تشغيل التطبيق لتفعيل اللغة العربية."
   },
   "more": {
-    "title": "المزيد"
+    "title": "المزيد",
+    "sectionManagement": "الإدارة",
+    "sectionPreferences": "التفضيلات",
+    "sectionAccount": "الحساب"
   }
 }

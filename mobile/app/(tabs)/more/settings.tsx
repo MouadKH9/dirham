@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -33,15 +33,15 @@ export default function SettingsScreen() {
   const setLanguage = useSettingsStore((s) => s.setLanguage);
   const setCurrencyDisplay = useSettingsStore((s) => s.setCurrencyDisplay);
 
-  const handleLanguageSelect = (lang: Language) => {
-    void setLanguage(lang);
+  const handleLanguageSelect = useCallback(async (lang: Language) => {
+    await setLanguage(lang);
     if (lang === 'ar') {
       Alert.alert(
         t('settings.restartRequired'),
         t('settings.restartMessage'),
       );
     }
-  };
+  }, [setLanguage, t]);
 
   const handleLogout = () => {
     Alert.alert(
@@ -79,7 +79,7 @@ export default function SettingsScreen() {
                 <Pressable
                   key={code}
                   style={[styles.pill, language === code && styles.pillActive]}
-                  onPress={() => handleLanguageSelect(code)}
+                  onPress={() => { void handleLanguageSelect(code); }}
                 >
                   <Text
                     variant="body"
@@ -126,7 +126,7 @@ export default function SettingsScreen() {
         {/* Account section */}
         <View style={styles.section}>
           <Text variant="caption" style={styles.sectionTitle}>
-            Compte
+            {t('more.sectionAccount')}
           </Text>
           <Button onPress={handleLogout} variant="danger">
             {t('auth.logout')}
