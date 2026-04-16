@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "Dirham",
+    "slug": "dirham",
+    "scheme": "dirham",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#FBF7F0"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.dirham.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#C45E3E"
+      },
+      "package": "com.dirham.app"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-secure-store"
+    ]
+  }
+}
