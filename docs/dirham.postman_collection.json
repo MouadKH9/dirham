@@ -1,0 +1,933 @@
+{
+  "info": {
+    "name": "Dirham API",
+    "description": "Postman collection for the Dirham personal finance backend.\n\nSetup:\n1. Set the `baseUrl` variable to your server (e.g. http://localhost:8000).\n2. Run **Auth / Register** or **Auth / Login** — the collection auto-saves `accessToken` and `refreshToken` as collection variables.\n3. All other requests read `accessToken` from the collection variable automatically.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "accountId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "categoryId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "transactionId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "billId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "budgetId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "insightId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    pm.collectionVariables.set('accessToken', body.tokens.access);",
+                  "    pm.collectionVariables.set('refreshToken', body.tokens.refresh);",
+                  "    pm.test('Tokens saved', () => pm.expect(body.tokens.access).to.be.a('string'));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\",\n  \"preferred_language\": \"fr\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "register", ""]
+            },
+            "description": "Creates a new user account. Automatically creates a default \"Cash\" account. Saves access and refresh tokens as collection variables."
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const body = pm.response.json();",
+                  "    pm.collectionVariables.set('accessToken', body.access);",
+                  "    pm.collectionVariables.set('refreshToken', body.refresh);",
+                  "    pm.test('Tokens saved', () => pm.expect(body.access).to.be.a('string'));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login", ""]
+            },
+            "description": "Authenticates a user and saves JWT tokens as collection variables."
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const body = pm.response.json();",
+                  "    pm.collectionVariables.set('accessToken', body.access);",
+                  "    pm.collectionVariables.set('refreshToken', body.refresh);",
+                  "    pm.test('New tokens saved', () => pm.expect(body.access).to.be.a('string'));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/refresh/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "refresh", ""]
+            },
+            "description": "Exchanges a refresh token for a new access+refresh pair. Old refresh token is blacklisted (rotation enabled)."
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/logout/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "logout", ""]
+            },
+            "description": "Blacklists the refresh token. Returns 205 Reset Content with no body."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Accounts",
+      "item": [
+        {
+          "name": "List Accounts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const body = pm.response.json();",
+                  "    if (Array.isArray(body) && body.length > 0) {",
+                  "        pm.collectionVariables.set('accountId', body[0].id);",
+                  "        pm.test('accountId saved: ' + body[0].id, () => true);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", ""]
+            },
+            "description": "Returns all accounts for the authenticated user (no pagination — typically < 10 items). Saves the first account ID."
+          }
+        },
+        {
+          "name": "Create Account",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    pm.collectionVariables.set('accountId', body.id);",
+                  "    pm.test('accountId saved: ' + body.id, () => true);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"CIH Bank\",\n  \"type\": \"manual\",\n  \"currency\": \"MAD\",\n  \"balance\": \"5000.00\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", ""]
+            },
+            "description": "Creates a new account. `type`, `currency`, and `balance` are optional (defaults: manual, MAD, 0.00)."
+          }
+        },
+        {
+          "name": "Get Account",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", "{{accountId}}", ""]
+            },
+            "description": "Returns a single account by ID. 404 if not owned by the authenticated user."
+          }
+        },
+        {
+          "name": "Update Account",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"CIH Bank (updated)\",\n  \"balance\": \"6500.00\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", "{{accountId}}", ""]
+            },
+            "description": "Partial update — all fields optional. Note: accounts cannot be deleted."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "List Categories (French)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const body = pm.response.json();",
+                  "    if (Array.isArray(body) && body.length > 0) {",
+                  "        pm.collectionVariables.set('categoryId', body[0].id);",
+                  "        pm.test('categoryId saved: ' + body[0].id, () => true);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept-Language", "value": "fr" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "categories", ""]
+            },
+            "description": "Returns system categories + user's custom categories. `name` field is localized to French. Excludes archived categories."
+          }
+        },
+        {
+          "name": "List Categories (Arabic)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept-Language", "value": "ar" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "categories", ""]
+            },
+            "description": "Returns categories with Arabic `name` values."
+          }
+        },
+        {
+          "name": "Create Custom Category",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    pm.collectionVariables.set('categoryId', body.id);",
+                  "    pm.test('categoryId saved: ' + body.id, () => true);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_fr\": \"Voiture\",\n  \"name_ar\": \"سيارة\",\n  \"name_en\": \"Car\",\n  \"icon\": \"🚗\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "categories", ""]
+            },
+            "description": "Creates a user-owned custom category. `user` and `is_system` are set server-side."
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_fr\": \"Ma Voiture\",\n  \"icon\": \"🚘\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories/{{categoryId}}/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "categories", "{{categoryId}}", ""]
+            },
+            "description": "Partial update on a user-owned category. 403 if targeting a system category or another user's category."
+          }
+        },
+        {
+          "name": "Archive Category",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_archived\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories/{{categoryId}}/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "categories", "{{categoryId}}", ""]
+            },
+            "description": "Archives a category so it no longer appears in the list. Only works on user-owned categories."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "List Transactions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions/?page=1&page_size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions", ""],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "page_size", "value": "20" },
+                { "key": "account", "value": "{{accountId}}", "disabled": true },
+                { "key": "category", "value": "{{categoryId}}", "disabled": true },
+                { "key": "type", "value": "expense", "disabled": true },
+                { "key": "date_from", "value": "2026-04-01", "disabled": true },
+                { "key": "date_to", "value": "2026-04-30", "disabled": true },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "ordering", "value": "-date", "disabled": true }
+              ]
+            },
+            "description": "Paginated list of transactions (default: newest first). Enable/disable query params as needed.\n\nFilters: account, category, type (income|expense|bill), date_from, date_to, search (notes), ordering."
+          }
+        },
+        {
+          "name": "Create Transaction (Expense)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    pm.collectionVariables.set('transactionId', body.id);",
+                  "    pm.test('transactionId saved: ' + body.id, () => true);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"account\": \"{{accountId}}\",\n  \"category\": \"{{categoryId}}\",\n  \"type\": \"expense\",\n  \"amount\": \"250.00\",\n  \"date\": \"2026-04-14\",\n  \"currency\": \"MAD\",\n  \"notes\": \"Carrefour Market\",\n  \"is_recurring\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions", ""]
+            },
+            "description": "Creates an expense transaction. `currency`, `notes`, `is_recurring`, `recurring_bill` are optional."
+          }
+        },
+        {
+          "name": "Create Transaction (Income)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"account\": \"{{accountId}}\",\n  \"category\": \"{{categoryId}}\",\n  \"type\": \"income\",\n  \"amount\": \"8000.00\",\n  \"date\": \"2026-04-01\",\n  \"notes\": \"Salaire avril\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions", ""]
+            }
+          }
+        },
+        {
+          "name": "Create Transaction (Bill)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"account\": \"{{accountId}}\",\n  \"category\": \"{{categoryId}}\",\n  \"type\": \"bill\",\n  \"amount\": \"199.00\",\n  \"date\": \"2026-04-14\",\n  \"notes\": \"Maroc Telecom\",\n  \"is_recurring\": true,\n  \"recurring_bill\": \"{{billId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions", ""]
+            },
+            "description": "Creates a bill payment transaction linked to a recurring bill. Set `billId` first (from Recurring Bills section)."
+          }
+        },
+        {
+          "name": "Get Transaction",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions/{{transactionId}}/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions", "{{transactionId}}", ""]
+            }
+          }
+        },
+        {
+          "name": "Update Transaction (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": \"300.00\",\n  \"notes\": \"Carrefour Market (updated)\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions/{{transactionId}}/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions", "{{transactionId}}", ""]
+            }
+          }
+        },
+        {
+          "name": "Update Transaction (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"account\": \"{{accountId}}\",\n  \"category\": \"{{categoryId}}\",\n  \"type\": \"expense\",\n  \"amount\": \"300.00\",\n  \"date\": \"2026-04-14\",\n  \"currency\": \"MAD\",\n  \"notes\": \"Full replace\",\n  \"is_recurring\": false,\n  \"recurring_bill\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions/{{transactionId}}/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions", "{{transactionId}}", ""]
+            }
+          }
+        },
+        {
+          "name": "Delete Transaction",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions/{{transactionId}}/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions", "{{transactionId}}", ""]
+            },
+            "description": "Returns 204 No Content on success."
+          }
+        },
+        {
+          "name": "Monthly Summary",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions/summary/?month=2026-04",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions", "summary", ""],
+              "query": [
+                { "key": "month", "value": "2026-04", "description": "YYYY-MM format. Defaults to current month if omitted." }
+              ]
+            },
+            "description": "Returns income, expense, bill totals and net for the given month."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recurring Bills",
+      "item": [
+        {
+          "name": "List Bills",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const body = pm.response.json();",
+                  "    const results = body.results || body;",
+                  "    if (Array.isArray(results) && results.length > 0) {",
+                  "        pm.collectionVariables.set('billId', results[0].id);",
+                  "        pm.test('billId saved: ' + results[0].id, () => true);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bills/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "bills", ""]
+            },
+            "description": "Returns all recurring bills for the authenticated user."
+          }
+        },
+        {
+          "name": "Create Bill",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    pm.collectionVariables.set('billId', body.id);",
+                  "    pm.test('billId saved: ' + body.id, () => true);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category\": \"{{categoryId}}\",\n  \"name\": \"Maroc Telecom\",\n  \"amount\": \"199.00\",\n  \"frequency\": \"monthly\",\n  \"next_due_date\": \"2026-05-01\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bills/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "bills", ""]
+            },
+            "description": "Creates a recurring bill. `frequency`: weekly | monthly | yearly. `is_active` defaults to true."
+          }
+        },
+        {
+          "name": "Get Bill",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bills/{{billId}}/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "bills", "{{billId}}", ""]
+            }
+          }
+        },
+        {
+          "name": "Update Bill",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": \"220.00\",\n  \"next_due_date\": \"2026-06-01\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bills/{{billId}}/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "bills", "{{billId}}", ""]
+            }
+          }
+        },
+        {
+          "name": "Deactivate Bill",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_active\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bills/{{billId}}/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "bills", "{{billId}}", ""]
+            }
+          }
+        },
+        {
+          "name": "Delete Bill",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bills/{{billId}}/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "bills", "{{billId}}", ""]
+            },
+            "description": "Returns 204 No Content on success."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Budgets",
+      "item": [
+        {
+          "name": "List Budgets",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const body = pm.response.json();",
+                  "    const results = body.results || body;",
+                  "    if (Array.isArray(results) && results.length > 0) {",
+                  "        pm.collectionVariables.set('budgetId', results[0].id);",
+                  "        pm.test('budgetId saved: ' + results[0].id, () => true);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/budgets/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "budgets", ""]
+            },
+            "description": "Returns all budgets. Default ordering: newest month first, then by category name."
+          }
+        },
+        {
+          "name": "Create Budget",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    pm.collectionVariables.set('budgetId', body.id);",
+                  "    pm.test('budgetId saved: ' + body.id, () => true);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category\": \"{{categoryId}}\",\n  \"amount\": \"2000.00\",\n  \"month\": \"2026-04-01\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/budgets/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "budgets", ""]
+            },
+            "description": "Creates a monthly budget for a category. `month` must be the first day of the month (YYYY-MM-01). 400 if budget already exists for this category+month."
+          }
+        },
+        {
+          "name": "Get Budget",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/budgets/{{budgetId}}/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "budgets", "{{budgetId}}", ""]
+            }
+          }
+        },
+        {
+          "name": "Update Budget",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": \"2500.00\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/budgets/{{budgetId}}/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "budgets", "{{budgetId}}", ""]
+            },
+            "description": "Partial update on a budget. Note: budgets cannot be deleted."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Insights",
+      "item": [
+        {
+          "name": "List Insights",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const body = pm.response.json();",
+                  "    const results = body.results || body;",
+                  "    if (Array.isArray(results) && results.length > 0) {",
+                  "        pm.collectionVariables.set('insightId', results[0].id);",
+                  "        pm.test('insightId saved: ' + results[0].id, () => true);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/insights/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "insights", ""],
+              "query": [
+                { "key": "is_read", "value": "false", "disabled": true },
+                { "key": "type", "value": "breakdown", "disabled": true, "description": "breakdown | anomaly | awareness" },
+                { "key": "language", "value": "fr", "disabled": true }
+              ]
+            },
+            "description": "Returns AI-generated insights. All filter params are optional."
+          }
+        },
+        {
+          "name": "List Unread Insights",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/insights/?is_read=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "insights", ""],
+              "query": [
+                { "key": "is_read", "value": "false" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Insight",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/insights/{{insightId}}/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "insights", "{{insightId}}", ""]
+            }
+          }
+        },
+        {
+          "name": "Mark as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_read\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/insights/{{insightId}}/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "insights", "{{insightId}}", ""]
+            }
+          }
+        },
+        {
+          "name": "Unread Count",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/insights/unread-count/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "insights", "unread-count", ""]
+            },
+            "description": "Returns { \"count\": N } — number of unread insights."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/dashboard/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "dashboard", ""]
+            },
+            "description": "Single aggregated endpoint for the home screen. Returns: accounts, last 10 transactions, current month summary, unread insights count, and budget progress for the current month."
+          }
+        }
+      ]
+    }
+  ]
+}

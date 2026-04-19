@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
-import { ActivityIndicator, AppState, AppStateStatus, View } from 'react-native';
+import { AppState, AppStateStatus } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
@@ -8,7 +8,6 @@ import { useFonts, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_7
 import * as SecureStore from 'expo-secure-store';
 import { useAuthStore } from '@/lib/stores/auth';
 import { useSettingsStore } from '@/lib/stores/settings';
-import { colors } from '@/lib/theme/colors';
 
 export default function RootLayout() {
   const checkAuth = useAuthStore((s) => s.checkAuth);
@@ -53,12 +52,8 @@ export default function RootLayout() {
     return () => subscription.remove();
   }, []);
 
-  if (!fontsLoaded || isLoading) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.cream }}>
-        <ActivityIndicator size="large" color={colors.terracotta} />
-      </View>
-    );
+  if (!fontsLoaded) {
+    return null;
   }
 
   return (

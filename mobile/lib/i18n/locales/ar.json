@@ -49,7 +49,10 @@
     "viewAll": "عرض الكل",
     "incomeArrow": "↑ الدخل",
     "expenseArrow": "↓ المصروفات",
-    "loadError": "حدث خطأ ما"
+    "loadError": "حدث خطأ ما",
+    "myAccounts": "حساباتي",
+    "accountTypeManual": "يدوي",
+    "accountTypeSynced": "متزامن"
   },
   "transactions": {
     "title": "المعاملات",

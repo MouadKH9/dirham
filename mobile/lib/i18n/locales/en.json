@@ -49,7 +49,10 @@
     "viewAll": "See all",
     "incomeArrow": "↑ Income",
     "expenseArrow": "↓ Expenses",
-    "loadError": "Something went wrong"
+    "loadError": "Something went wrong",
+    "myAccounts": "My accounts",
+    "accountTypeManual": "Manual",
+    "accountTypeSynced": "Synced"
   },
   "transactions": {
     "title": "Transactions",

@@ -5,6 +5,7 @@ import BottomSheet, {
   BottomSheetScrollView,
   type BottomSheetBackdropProps,
 } from '@gorhom/bottom-sheet';
+import { useTranslation } from 'react-i18next';
 import { colors } from '@/lib/theme/colors';
 import { spacing } from '@/lib/theme/spacing';
 import type { Account, Category, TransactionFilters } from '@/lib/types';
@@ -19,6 +20,8 @@ interface FilterSheetProps {
 }
 
 export function FilterSheet({ isOpen, onClose, onApply, accounts, categories, activeFilters }: FilterSheetProps) {
+  const { t: tTx } = useTranslation('transactions');
+  const { t: tCat } = useTranslation('categories');
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ['55%'], []);
 
@@ -88,17 +91,17 @@ export function FilterSheet({ isOpen, onClose, onApply, accounts, categories, ac
       handleIndicatorStyle={styles.handleIndicator}
     >
       <BottomSheetScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={styles.title}>Filtres</Text>
+        <Text style={styles.title}>{tTx('filters')}</Text>
 
         {/* Account filter */}
-        <Text style={styles.sectionLabel}>Compte</Text>
+        <Text style={styles.sectionLabel}>{tTx('account')}</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipRow}>
           <Pressable
             style={[styles.chip, selectedAccount === null && styles.chipActive]}
             onPress={() => setSelectedAccount(null)}
           >
             <Text style={[styles.chipText, selectedAccount === null && styles.chipTextActive]}>
-              Tous les comptes
+              {tTx('allAccounts')}
             </Text>
           </Pressable>
           {accounts.map((acc) => {
@@ -118,14 +121,14 @@ export function FilterSheet({ isOpen, onClose, onApply, accounts, categories, ac
         </ScrollView>
 
         {/* Category filter */}
-        <Text style={[styles.sectionLabel, { marginTop: spacing.md }]}>Catégorie</Text>
+        <Text style={[styles.sectionLabel, { marginTop: spacing.md }]}>{tTx('category')}</Text>
         <View style={styles.categoryGrid}>
           <Pressable
             style={[styles.categoryChip, selectedCategory === null && styles.chipActive]}
             onPress={() => setSelectedCategory(null)}
           >
             <Text style={[styles.chipText, selectedCategory === null && styles.chipTextActive]}>
-              Toutes
+              {tCat('all')}
             </Text>
           </Pressable>
           {categories.map((cat) => {
@@ -148,10 +151,10 @@ export function FilterSheet({ isOpen, onClose, onApply, accounts, categories, ac
         {/* Buttons */}
         <View style={styles.buttonRow}>
           <Pressable style={styles.resetButton} onPress={handleReset}>
-            <Text style={styles.resetButtonText}>Réinitialiser</Text>
+            <Text style={styles.resetButtonText}>{tTx('reset')}</Text>
           </Pressable>
           <Pressable style={styles.applyButton} onPress={handleApply}>
-            <Text style={styles.applyButtonText}>Appliquer</Text>
+            <Text style={styles.applyButtonText}>{tTx('apply')}</Text>
           </Pressable>
         </View>
       </BottomSheetScrollView>

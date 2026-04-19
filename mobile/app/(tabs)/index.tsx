@@ -9,6 +9,7 @@ import { AccountPills } from '@/components/dashboard/AccountPills';
 import { MonthlySummary } from '@/components/dashboard/MonthlySummary';
 import { RecentTransactions } from '@/components/dashboard/RecentTransactions';
 import { useDashboard } from '@/lib/hooks/useDashboard';
+import { useTransactionsStore } from '@/lib/stores/transactions';
 import { colors } from '@/lib/theme/colors';
 import { spacing } from '@/lib/theme/spacing';
 
@@ -100,6 +101,14 @@ export default function DashboardScreen() {
   const { t: tCommon } = useTranslation('common');
   const insets = useSafeAreaInsets();
   const { data, isLoading, error, refresh } = useDashboard();
+  const clearTransactionFilters = useTransactionsStore((s) => s.clearFilters);
+  const setTransactionFilters = useTransactionsStore((s) => s.setFilters);
+
+  const goToAccountTransactions = (accountId: string) => {
+    clearTransactionFilters();
+    setTransactionFilters({ account: accountId });
+    router.push('/(tabs)/transactions');
+  };
 
   // Compute total balance from accounts if not provided by API
   const totalBalance = useMemo(() => {
@@ -160,7 +169,8 @@ export default function DashboardScreen() {
         {data?.accounts && data.accounts.length > 0 && (
           <AccountPills
             accounts={data.accounts}
-            onAccountPress={(_id) => router.push('/(tabs)/accounts')}
+            onAccountPress={goToAccountTransactions}
+            onViewAll={() => router.push('/(tabs)/accounts')}
           />
         )}
 

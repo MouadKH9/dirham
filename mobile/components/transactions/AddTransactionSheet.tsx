@@ -43,6 +43,7 @@ export function AddTransactionSheet() {
   const closeAddTransaction = useUIStore((s) => s.closeAddTransaction);
   const categories = useCategoriesStore((s) => s.categories);
   const accounts = useAccountsStore((s) => s.accounts);
+  const fetchAccounts = useAccountsStore((s) => s.fetchAccounts);
   const createTransaction = useTransactionsStore((s) => s.createTransaction);
   const fetchDashboard = useDashboardStore((s) => s.fetchDashboard);
   const currencyDisplay = useSettingsStore((s) => s.currencyDisplay);
@@ -121,7 +122,7 @@ export function AddTransactionSheet() {
         date,
         notes: notes.trim() || undefined,
       });
-      await fetchDashboard();
+      await Promise.all([fetchDashboard(), fetchAccounts()]);
       closeAddTransaction();
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     } catch (err) {
@@ -130,7 +131,7 @@ export function AddTransactionSheet() {
     } finally {
       setIsSubmitting(false);
     }
-  }, [amount, categoryId, accountId, createTransaction, type, date, notes, fetchDashboard, closeAddTransaction]);
+  }, [amount, categoryId, accountId, createTransaction, type, date, notes, fetchDashboard, fetchAccounts, closeAddTransaction]);
 
   const renderBackdrop = useCallback(
     (props: BottomSheetBackdropProps) => (

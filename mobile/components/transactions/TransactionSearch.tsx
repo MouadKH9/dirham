@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { Text } from '@/components/ui';
 import { colors } from '@/lib/theme/colors';
 import { spacing } from '@/lib/theme/spacing';
@@ -10,6 +11,7 @@ interface TransactionSearchProps {
 }
 
 export function TransactionSearch({ onSearch, value }: TransactionSearchProps) {
+  const { t } = useTranslation('transactions');
   const [localValue, setLocalValue] = useState(value);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -46,7 +48,7 @@ export function TransactionSearch({ onSearch, value }: TransactionSearchProps) {
         style={styles.input}
         value={localValue}
         onChangeText={handleChange}
-        placeholder="Rechercher..."
+        placeholder={t('search')}
         placeholderTextColor={colors.textMuted}
         returnKeyType="search"
         clearButtonMode="never"

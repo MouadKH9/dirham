@@ -1,5 +1,6 @@
 import React from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { colors } from '@/lib/theme/colors';
 import { spacing } from '@/lib/theme/spacing';
 
@@ -13,17 +14,19 @@ interface FilterChipsProps {
 
 interface ChipConfig {
   key: FilterType;
-  label: string;
+  labelKey: string;
   activeColor: string;
 }
 
 const CHIPS: ChipConfig[] = [
-  { key: 'all', label: 'Tout', activeColor: colors.terracotta },
-  { key: 'expense', label: 'Dépenses', activeColor: colors.terracotta },
-  { key: 'income', label: 'Revenus', activeColor: colors.emerald },
+  { key: 'all', labelKey: 'all', activeColor: colors.terracotta },
+  { key: 'expense', labelKey: 'expenses', activeColor: colors.terracotta },
+  { key: 'income', labelKey: 'revenues', activeColor: colors.emerald },
 ];
 
 export function FilterChips({ activeFilter, onFilterChange, onOpenFilters }: FilterChipsProps) {
+  const { t } = useTranslation('transactions');
+
   return (
     <View style={styles.wrapper}>
       <ScrollView
@@ -45,7 +48,7 @@ export function FilterChips({ activeFilter, onFilterChange, onOpenFilters }: Fil
               onPress={() => onFilterChange(chip.key)}
             >
               <Text style={[styles.chipText, isActive ? styles.chipTextActive : styles.chipTextInactive]}>
-                {chip.label}
+                {t(chip.labelKey)}
               </Text>
             </Pressable>
           );
@@ -53,7 +56,7 @@ export function FilterChips({ activeFilter, onFilterChange, onOpenFilters }: Fil
 
         <Pressable style={[styles.chip, styles.filterButton]} onPress={onOpenFilters}>
           <Text style={styles.filterIcon}>⚙️</Text>
-          <Text style={styles.chipTextInactive}>Filtres</Text>
+          <Text style={styles.chipTextInactive}>{t('filters')}</Text>
         </Pressable>
       </ScrollView>
     </View>

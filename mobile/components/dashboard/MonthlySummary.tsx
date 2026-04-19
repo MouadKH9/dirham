@@ -11,19 +11,40 @@ interface MonthlySummaryProps {
   summary: MonthlySummaryType;
 }
 
-function formatMonth(month: string): string {
+// Static month names by language. We avoid `toLocaleDateString` because
+// React Native's Hermes runtime ships without full ICU data, so locales
+// other than the default often fall back to English.
+const MONTH_NAMES: Record<string, readonly string[]> = {
+  fr: [
+    'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+    'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre',
+  ],
+  en: [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
+  ],
+  ar: [
+    'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+    'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر',
+  ],
+};
+
+function formatMonth(month: string, lang: string): string {
   // month is "2026-04"
   try {
     const [year, monthNum] = month.split('-');
-    const date = new Date(parseInt(year), parseInt(monthNum) - 1, 1);
-    return date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+    const idx = parseInt(monthNum, 10) - 1;
+    const langKey = lang.split('-')[0].toLowerCase();
+    const names = MONTH_NAMES[langKey] ?? MONTH_NAMES.fr;
+    const name = names[idx] ?? month;
+    return `${name} ${year}`;
   } catch {
     return month;
   }
 }
 
 export function MonthlySummary({ summary }: MonthlySummaryProps) {
-  const { t } = useTranslation('dashboard');
+  const { t, i18n } = useTranslation('dashboard');
   const currencyDisplay = useSettingsStore((s) => s.currencyDisplay);
   const net = parseFloat(summary.net);
   const netType = net >= 0 ? 'income' : 'expense';
@@ -31,7 +52,7 @@ export function MonthlySummary({ summary }: MonthlySummaryProps) {
   return (
     <Card style={styles.card}>
       <View style={styles.header}>
-        <Text variant="h3">{formatMonth(summary.month)}</Text>
+        <Text variant="h3">{formatMonth(summary.month, i18n.language)}</Text>
         <Text variant="caption" color={colors.textSecondary}>
           {t('thisMonth')}
         </Text>

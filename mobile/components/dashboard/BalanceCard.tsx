@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ZelligeHeader, AmountText, Text } from '@/components/ui';
 import { colors } from '@/lib/theme/colors';
 import { spacing } from '@/lib/theme/spacing';
@@ -12,13 +13,22 @@ interface BalanceCardProps {
   expense: string;
 }
 
+const BASE_HEIGHT = 200;
+const EXTRA_TOP_BREATHING = spacing.md;
+
 export function BalanceCard({ totalBalance, income, expense }: BalanceCardProps) {
   const { t } = useTranslation('dashboard');
   const currencyDisplay = useSettingsStore((s) => s.currencyDisplay);
+  const insets = useSafeAreaInsets();
+
+  // Grow the header to absorb the status-bar inset so content stays vertically
+  // centered below the notch / Dynamic Island, with a little extra breathing
+  // room so the "Solde total" label isn't kissing the status bar.
+  const topPadding = insets.top + EXTRA_TOP_BREATHING;
 
   return (
-    <ZelligeHeader height={200}>
-      <View style={styles.content}>
+    <ZelligeHeader height={BASE_HEIGHT + topPadding}>
+      <View style={[styles.content, { paddingTop: topPadding }]}>
         <Text variant="caption" color={colors.white} style={styles.label}>
           {t('totalBalance')}
         </Text>

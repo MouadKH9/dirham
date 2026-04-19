@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
+import { useTranslation } from 'react-i18next';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useUIStore } from '@/lib/stores/ui';
 import { colors } from '@/lib/theme/colors';
@@ -14,19 +15,21 @@ type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
 interface TabConfig {
   name: string;
-  label: string;
+  labelKey: string;
+  ns: string;
   icon: IoniconName;
   activeIcon: IoniconName;
 }
 
 const TAB_CONFIGS: TabConfig[] = [
-  { name: 'index', label: 'Accueil', icon: 'home-outline', activeIcon: 'home' },
-  { name: 'transactions', label: 'Transactions', icon: 'list-outline', activeIcon: 'list' },
-  { name: 'accounts', label: 'Comptes', icon: 'wallet-outline', activeIcon: 'wallet' },
-  { name: 'more', label: 'Plus', icon: 'ellipsis-horizontal-outline', activeIcon: 'ellipsis-horizontal' },
+  { name: 'index', labelKey: 'title', ns: 'dashboard', icon: 'home-outline', activeIcon: 'home' },
+  { name: 'transactions', labelKey: 'title', ns: 'transactions', icon: 'list-outline', activeIcon: 'list' },
+  { name: 'accounts', labelKey: 'title', ns: 'accounts', icon: 'wallet-outline', activeIcon: 'wallet' },
+  { name: 'more', labelKey: 'title', ns: 'more', icon: 'ellipsis-horizontal-outline', activeIcon: 'ellipsis-horizontal' },
 ];
 
 export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const openAddTransaction = useUIStore((s) => s.openAddTransaction);
 
@@ -59,6 +62,7 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
     const route = state.routes.find((r) => r.name === tab.name);
     const isFocused = route ? state.index === state.routes.indexOf(route) : false;
     const iconColor = isFocused ? colors.terracotta : colors.textMuted;
+    const label = t(tab.labelKey, { ns: tab.ns });
 
     return (
       <Pressable
@@ -67,14 +71,14 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
         style={styles.tab}
         accessibilityRole="button"
         accessibilityState={{ selected: isFocused }}
-        accessibilityLabel={tab.label}
+        accessibilityLabel={label}
       >
         <Ionicons
           name={isFocused ? tab.activeIcon : tab.icon}
           size={24}
           color={iconColor}
         />
-        <Text style={[styles.tabLabel, { color: iconColor }]}>{tab.label}</Text>
+        <Text style={[styles.tabLabel, { color: iconColor }]}>{label}</Text>
       </Pressable>
     );
   };
@@ -99,7 +103,7 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
         onPress={handleFabPress}
         style={styles.fab}
         accessibilityRole="button"
-        accessibilityLabel="Ajouter une transaction"
+        accessibilityLabel={t('add', { ns: 'transactions' })}
       >
         <Ionicons name="add" size={28} color={colors.white} />
       </Pressable>

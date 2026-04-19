@@ -166,10 +166,14 @@ export default function TransactionsScreen() {
   const categories = useCategoriesStore((s) => s.categories);
 
   // Local state
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilter, setActiveFilter] = useState<FilterType>('all');
+  const [searchQuery, setSearchQuery] = useState(filters.search ?? '');
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Derive the active type chip from the store so external filter changes
+  // (e.g. tapping an account on the dashboard) stay in sync with the UI.
+  const activeFilter: FilterType =
+    filters.type === 'expense' ? 'expense' : filters.type === 'income' ? 'income' : 'all';
 
   // Track whether filters are active (beyond the chip filter)
   const hasActiveFilters =
@@ -200,7 +204,6 @@ export default function TransactionsScreen() {
 
   const handleFilterChange = useCallback(
     (filter: FilterType) => {
-      setActiveFilter(filter);
       if (filter === 'all') {
         setFilters({ type: undefined });
       } else if (filter === 'expense') {
@@ -223,7 +226,6 @@ export default function TransactionsScreen() {
 
   const handleClearFilters = useCallback(() => {
     setSearchQuery('');
-    setActiveFilter('all');
     clearFilters();
     void fetchTransactions(true);
   }, [clearFilters, fetchTransactions]);

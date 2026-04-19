@@ -4,11 +4,12 @@ import fr from './locales/fr.json';
 import ar from './locales/ar.json';
 import en from './locales/en.json';
 
-const namespaces = ['common', 'auth', 'transactions', 'accounts', 'categories', 'settings', 'dashboard', 'more'] as const;
+const namespaces = ['app', 'common', 'auth', 'transactions', 'accounts', 'categories', 'settings', 'dashboard', 'more'] as const;
 
 i18n.use(initReactI18next).init({
   resources: {
     fr: {
+      app: fr,
       common: fr.common,
       auth: fr.auth,
       transactions: fr.transactions,
@@ -19,6 +20,7 @@ i18n.use(initReactI18next).init({
       more: fr.more,
     },
     ar: {
+      app: ar,
       common: ar.common,
       auth: ar.auth,
       transactions: ar.transactions,
@@ -29,6 +31,7 @@ i18n.use(initReactI18next).init({
       more: ar.more,
     },
     en: {
+      app: en,
       common: en.common,
       auth: en.auth,
       transactions: en.transactions,
@@ -42,7 +45,7 @@ i18n.use(initReactI18next).init({
   lng: 'fr',
   fallbackLng: 'fr',
   ns: namespaces,
-  defaultNS: 'common',
+  defaultNS: 'app',
   interpolation: {
     escapeValue: false,
   },

@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { ZelligeHeader } from '@/components/ui/ZelligeHeader';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -18,6 +19,7 @@ import { colors } from '@/lib/theme/colors';
 import { spacing } from '@/lib/theme/spacing';
 
 export default function LoginScreen() {
+  const { t } = useTranslation('auth');
   const router = useRouter();
   const { login, isSubmitting, error, clearError } = useAuthStore();
 
@@ -51,7 +53,7 @@ export default function LoginScreen() {
       <StatusBar style="light" />
       <ZelligeHeader height={180}>
         <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>Connexion</Text>
+          <Text style={styles.headerTitle}>{t('loginTitle')}</Text>
         </View>
       </ZelligeHeader>
 
@@ -67,24 +69,24 @@ export default function LoginScreen() {
         ) : null}
 
         <Input
-          label="Email"
+          label={t('email')}
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
           autoComplete="email"
           containerStyle={styles.inputContainer}
-          placeholder="vous@exemple.com"
+          placeholder={t('emailPlaceholder')}
         />
 
         <Input
-          label="Mot de passe"
+          label={t('password')}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
           autoComplete="password"
           containerStyle={styles.inputContainer}
-          placeholder="••••••••"
+          placeholder={t('passwordPlaceholder')}
         />
 
         <Button
@@ -92,7 +94,7 @@ export default function LoginScreen() {
           loading={isSubmitting}
           style={styles.submitButton}
         >
-          Se connecter
+          {t('login')}
         </Button>
 
         <Pressable
@@ -100,8 +102,8 @@ export default function LoginScreen() {
           style={styles.linkRow}
         >
           <Text style={styles.linkText}>
-            Pas de compte?{' '}
-            <Text style={styles.linkHighlight}>Créer un compte</Text>
+            {t('noAccount')}{' '}
+            <Text style={styles.linkHighlight}>{t('register')}</Text>
           </Text>
         </Pressable>
       </ScrollView>

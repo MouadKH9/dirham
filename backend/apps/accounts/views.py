@@ -54,6 +54,14 @@ class LogoutView(generics.GenericAPIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+class MeView(generics.RetrieveAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+
 class AccountListCreateView(generics.ListCreateAPIView):
     serializer_class = AccountSerializer
     permission_classes = [IsAuthenticated]

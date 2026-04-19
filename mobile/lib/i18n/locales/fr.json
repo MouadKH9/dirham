@@ -26,6 +26,8 @@
     "noAccount": "Pas de compte ?",
     "hasAccount": "Déjà un compte ?",
     "language": "Langue",
+    "loginTitle": "Connexion",
+    "registerTitle": "Créer un compte",
     "logout": "Se déconnecter",
     "logoutConfirm": "Voulez-vous vous déconnecter ?",
     "emailPlaceholder": "votre@email.com",
@@ -49,7 +51,10 @@
     "viewAll": "Voir tout",
     "incomeArrow": "↑ Revenus",
     "expenseArrow": "↓ Dépenses",
-    "loadError": "Une erreur est survenue"
+    "loadError": "Une erreur est survenue",
+    "myAccounts": "Mes comptes",
+    "accountTypeManual": "Manuel",
+    "accountTypeSynced": "Synchronisé"
   },
   "transactions": {
     "title": "Transactions",
@@ -118,7 +123,8 @@
     "nameAr": "Nom en arabe (optionnel)",
     "nameEn": "Nom en anglais (optionnel)",
     "icon": "Icône",
-    "nameFrPlaceholder": "Ex: Voiture"
+    "nameFrPlaceholder": "Ex: Voiture",
+    "all": "Toutes"
   },
   "settings": {
     "title": "Paramètres",
