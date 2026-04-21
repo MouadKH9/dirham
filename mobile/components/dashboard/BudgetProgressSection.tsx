@@ -64,7 +64,9 @@ export function BudgetProgressSection({ budgets }: BudgetProgressSectionProps) {
             <View key={budget.category_id} style={styles.item}>
               <View style={styles.itemHeader}>
                 <Text variant="body" style={styles.categoryName}>
-                  {localizedCategoryNames.get(budget.category_id) || budget.category_name}
+                  {budget.category_ids && budget.category_ids.length > 0
+                    ? budget.category_ids.map((id) => localizedCategoryNames.get(id) || '').filter(Boolean).join(', ')
+                    : localizedCategoryNames.get(budget.category_id) || budget.category_name}
                 </Text>
                 <Text variant="caption" color={isOverBudget ? colors.error : colors.textSecondary}>
                   {isOverBudget ? t('budgetProgress.overBudget') : t('budgetProgress.remaining')}

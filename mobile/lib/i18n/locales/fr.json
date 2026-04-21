@@ -190,6 +190,56 @@
       "yearly": "Annuelle"
     }
   },
+  "budgets": {
+    "title": "Budgets",
+    "add": "Nouveau budget",
+    "createTitle": "Créer un budget",
+    "editTitle": "Modifier le budget",
+    "emptyTitle": "Aucun budget",
+    "emptyDescription": "Ajoutez un budget pour suivre vos dépenses par catégorie.",
+    "createError": "Erreur lors de la création du budget",
+    "updateError": "Erreur lors de la mise à jour du budget",
+    "unknownCategory": "Catégorie",
+    "fields": {
+      "name": "Nom",
+      "category": "Catégorie",
+      "amount": "Montant",
+      "month": "Mois",
+      "startMonth": "Mois de debut"
+    },
+    "placeholders": {
+      "name": "Ex: Essentiels, Famille, plafond transport"
+    },
+    "stepLabel": "Etape {{current}}/{{total}}",
+    "steps": {
+      "month": "Choisissez le mois",
+      "categories": "Selectionnez les categories",
+      "amountReview": "Montant et validation"
+    },
+    "reviewSummary": "{{amount}} DH pour {{count}} categories",
+    "monthSelector": {
+      "previous": "Mois precedent",
+      "next": "Mois suivant"
+    },
+    "recurring": {
+      "title": "Budgets recurrents",
+      "add": "Nouveau budget recurrent",
+      "createTitle": "Creer un budget recurrent",
+      "editTitle": "Modifier le budget recurrent",
+      "entryDescription": "Gerez les modeles generes chaque mois",
+      "emptyTitle": "Aucun budget recurrent",
+      "emptyDescription": "Creez un modele recurrent pour generer automatiquement vos budgets mensuels.",
+      "createError": "Erreur lors de la creation du budget recurrent",
+      "updateError": "Erreur lors de la mise a jour du budget recurrent",
+      "active": "Modele actif",
+      "statusActive": "Actif",
+      "statusInactive": "Inactif",
+      "startsFrom": "Commence en {{month}}",
+      "unnamed": "Budget recurrent",
+      "createFromBudget": "Enregistrer comme budget recurrent mensuel",
+      "manageTemplate": "Ouvrir le modele recurrent"
+    }
+  },
   "settings": {
     "title": "Paramètres",
     "language": "Langue",
@@ -210,6 +260,7 @@
     "sectionManagement": "Gestion",
     "sectionPreferences": "Préférences",
     "sectionAccount": "Compte",
-    "bills": "Factures récurrentes"
+    "bills": "Factures récurrentes",
+    "budgets": "Budgets"
   }
 }

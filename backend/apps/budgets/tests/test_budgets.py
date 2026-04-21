@@ -10,12 +10,14 @@ from apps.budgets.models import Budget
 def make_budget(user, category=None, **kwargs):
     if category is None:
         category = CategoryFactory(user=user)
-    return Budget.objects.create(
+    budget = Budget.objects.create(
         user=user,
-        category=category,
+        name=kwargs.get("name", ""),
         amount=kwargs.get("amount", "1000.00"),
         month=kwargs.get("month", date(2026, 4, 1)),
     )
+    budget.categories.set(kwargs.get("categories", [category]))
+    return budget
 
 
 @pytest.mark.django_db
@@ -33,7 +35,7 @@ class TestBudgetModel:
         user = UserFactory()
         cat = CategoryFactory(user=user, name_fr="Alimentation")
         budget = make_budget(user, category=cat, month=date(2026, 4, 1))
-        assert "Alimentation" in str(budget) or "2026-04" in str(budget)
+        assert "2026-04" in str(budget)
 
 
 @pytest.mark.django_db
@@ -51,13 +53,16 @@ class TestBudgetListCreateView:
     def test_create_budget(self, authenticated_client, user):
         category = CategoryFactory(user=user)
         data = {
-            "category": str(category.id),
+            "name": "Essentials",
+            "categories": [str(category.id)],
             "amount": "2000.00",
             "month": "2026-05-01",
         }
         response = authenticated_client.post(self.url, data)
         assert response.status_code == status.HTTP_201_CREATED
+        assert response.data["name"] == "Essentials"
         assert response.data["amount"] == "2000.00"
+        assert [str(category_id) for category_id in response.data["categories"]] == [str(category.id)]
 
     def test_unauthenticated_returns_401(self, api_client):
         response = api_client.get(self.url)

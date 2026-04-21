@@ -16,6 +16,7 @@ export default function MoreLayout() {
       <Stack.Screen name="settings" options={{ headerShown: true }} />
       <Stack.Screen name="categories" options={{ headerShown: false }} />
       <Stack.Screen name="bills" options={{ headerShown: false }} />
+      <Stack.Screen name="budgets" options={{ headerShown: false }} />
     </Stack>
   );
 }

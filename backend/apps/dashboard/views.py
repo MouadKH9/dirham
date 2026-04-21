@@ -52,21 +52,27 @@ class DashboardView(APIView):
         unread_count = AIInsight.objects.filter(user=user, is_read=False).count()
 
         # 5. Budget progress for current month
-        budgets = Budget.objects.filter(user=user, month=month_start).select_related("category")
+        budgets = Budget.objects.filter(user=user, month=month_start).prefetch_related("categories")
         budget_progress = []
         for budget in budgets:
+            budget_categories = list(budget.categories.all())
+            if not budget_categories:
+                continue
             spent = (
                 Transaction.objects.filter(
                     user=user,
-                    category=budget.category,
+                    category__in=budget_categories,
                     date__gte=month_start,
                     date__lte=month_end,
                     type__in=["expense", "bill"],
                 ).aggregate(total=Sum("amount"))["total"] or Decimal("0.00")
             )
+            category_ids = [str(category.id) for category in budget_categories]
+            category_names = ", ".join(category.name_fr for category in budget_categories)
             budget_progress.append({
-                "category_id": str(budget.category.id),
-                "category_name": budget.category.name_fr,
+                "category_id": category_ids[0] if category_ids else "",
+                "category_ids": category_ids,
+                "category_name": category_names,
                 "limit": budget.amount,
                 "spent": spent,
                 "remaining": budget.amount - spent,

@@ -58,9 +58,9 @@ class TestDashboardView:
         account = AccountFactory(user=user)
         category = CategoryFactory(user=user)
         TransactionFactory(user=user, account=account, category=category,
-                           type="income", amount="5000.00", date=date.today())
+                           type="income", amount=Decimal("5000.00"), date=date.today())
         TransactionFactory(user=user, account=account, category=category,
-                           type="expense", amount="1500.00", date=date.today())
+                           type="expense", amount=Decimal("1500.00"), date=date.today())
         response = authenticated_client.get(self.url)
         summary = response.data["monthly_summary"]
         assert Decimal(summary["income"]) == Decimal("5000.00")
@@ -74,20 +74,24 @@ class TestDashboardView:
 
     def test_budget_progress_includes_spent_and_limit(self, authenticated_client, user):
         account = AccountFactory(user=user)
-        category = CategoryFactory(user=user)
-        Budget.objects.create(
-            user=user, category=category,
-            amount="2000.00", month=date.today().replace(day=1)
+        category = CategoryFactory(user=user, name_fr="Alimentation")
+        budget = Budget.objects.create(
+            user=user,
+            amount="2000.00",
+            month=date.today().replace(day=1),
         )
+        budget.categories.set([category])
         TransactionFactory(user=user, account=account, category=category,
-                           type="expense", amount="750.00", date=date.today())
+                           type="expense", amount=Decimal("750.00"), date=date.today())
         response = authenticated_client.get(self.url)
         progress = response.data["budget_progress"]
         assert len(progress) == 1
         assert "category_id" in progress[0]
+        assert "category_ids" in progress[0]
         assert "limit" in progress[0]
         assert "spent" in progress[0]
         assert "remaining" in progress[0]
+        assert progress[0]["category_name"] == "Alimentation"
         assert Decimal(progress[0]["spent"]) == Decimal("750.00")
         assert Decimal(progress[0]["limit"]) == Decimal("2000.00")
         assert Decimal(progress[0]["remaining"]) == Decimal("1250.00")
