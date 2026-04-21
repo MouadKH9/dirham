@@ -24,6 +24,11 @@ import { useAccountsStore } from '@/lib/stores/accounts';
 import { useTransactionsStore } from '@/lib/stores/transactions';
 import { useDashboardStore } from '@/lib/stores/dashboard';
 import { useSettingsStore } from '@/lib/stores/settings';
+import {
+  QUICK_ADD_PRESETS,
+  type QuickAddPresetId,
+  resolvePresetCategoryId,
+} from '@/lib/constants/quickAddPresets';
 
 type TransactionType = 'expense' | 'income';
 
@@ -40,7 +45,9 @@ export function AddTransactionSheet() {
 
   // Store selectors
   const isOpen = useUIStore((s) => s.isAddTransactionOpen);
+  const addTransactionPreset = useUIStore((s) => s.addTransactionPreset);
   const closeAddTransaction = useUIStore((s) => s.closeAddTransaction);
+  const clearAddTransactionPreset = useUIStore((s) => s.clearAddTransactionPreset);
   const categories = useCategoriesStore((s) => s.categories);
   const accounts = useAccountsStore((s) => s.accounts);
   const fetchAccounts = useAccountsStore((s) => s.fetchAccounts);
@@ -94,10 +101,11 @@ export function AddTransactionSheet() {
       setCurrentSnap(index);
       if (index === -1) {
         closeAddTransaction();
+        clearAddTransactionPreset();
         resetForm();
       }
     },
-    [closeAddTransaction, resetForm],
+    [clearAddTransactionPreset, closeAddTransaction, resetForm],
   );
 
   const handleTypeToggle = useCallback((newType: TransactionType) => {
@@ -109,6 +117,25 @@ export function AddTransactionSheet() {
   const handleExpandDetails = useCallback(() => {
     bottomSheetRef.current?.snapToIndex(1);
   }, []);
+
+  const applyPreset = useCallback(
+    (presetId: QuickAddPresetId) => {
+      const preset = QUICK_ADD_PRESETS.find((item) => item.id === presetId);
+      if (!preset) return;
+
+      setType(preset.type);
+      if (preset.defaultAmount && !amount) {
+        setAmount(preset.defaultAmount);
+      }
+
+      const resolvedCategoryId = resolvePresetCategoryId(categories, preset);
+      if (resolvedCategoryId) {
+        setCategoryId(resolvedCategoryId);
+      }
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    },
+    [amount, categories],
+  );
 
   const handleSubmit = useCallback(async () => {
     if (!amount || !categoryId || parseFloat(amount) <= 0 || !accountId) return;
@@ -158,6 +185,11 @@ export function AddTransactionSheet() {
   const canSubmit = parseFloat(amount) > 0 && !!categoryId && !!accountId && !isSubmitting;
   const selectedAccount = accounts.find((a) => a.id === accountId);
   const isExpanded = currentSnap === 1;
+
+  useEffect(() => {
+    if (!isOpen || !addTransactionPreset) return;
+    applyPreset(addTransactionPreset);
+  }, [addTransactionPreset, applyPreset, isOpen]);
 
   return (
     <BottomSheet
@@ -230,6 +262,29 @@ export function AddTransactionSheet() {
           />
           <Text style={styles.currencySuffix}>{currencyDisplay}</Text>
         </View>
+
+        {/* Quick-add presets */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.quickAddRow}
+        >
+          {QUICK_ADD_PRESETS.map((preset) => {
+            const isActive = addTransactionPreset === preset.id
+              || resolvePresetCategoryId(categories, preset) === categoryId;
+            return (
+              <Pressable
+                key={preset.id}
+                style={[styles.quickAddChip, isActive && styles.quickAddChipActive]}
+                onPress={() => applyPreset(preset.id)}
+              >
+                <Text style={isActive ? { ...styles.quickAddText, ...styles.quickAddTextActive } : styles.quickAddText}>
+                  {preset.emoji} {t(preset.labelKey)}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
 
         {/* Category Grid */}
         <Text style={styles.sectionLabel}>{t('transactions.category')}</Text>
@@ -426,6 +481,31 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.textSecondary,
     marginTop: 8,
+  },
+  quickAddRow: {
+    gap: spacing.sm,
+    marginBottom: spacing.md,
+    paddingRight: spacing.md,
+  },
+  quickAddChip: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+  },
+  quickAddChipActive: {
+    borderColor: colors.terracotta,
+    backgroundColor: colors.terracotta + '14',
+  },
+  quickAddText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: colors.textSecondary,
+  },
+  quickAddTextActive: {
+    color: colors.terracotta,
   },
 
   // Category grid

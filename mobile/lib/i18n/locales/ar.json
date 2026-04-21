@@ -56,6 +56,12 @@
     "insightsCard": {
       "title": "تحليلات الذكاء الاصطناعي",
       "subtitle": "راجع تحليلات مصروفاتك"
+    },
+    "budgetProgress": {
+      "title": "تتبع الميزانيات",
+      "empty": "لا توجد ميزانيات مضبوطة لهذا الشهر.",
+      "remaining": "المتبقي",
+      "overBudget": "تجاوز الميزانية"
     }
   },
   "insights": {
@@ -104,7 +110,13 @@
     "allCategories": "جميع الفئات",
     "apply": "تطبيق",
     "reset": "إعادة تعيين",
-    "noTransactionsWithFilters": "لا توجد معاملات بهذه الفلاتر"
+    "noTransactionsWithFilters": "لا توجد معاملات بهذه الفلاتر",
+    "quickAdd": {
+      "cafe": "مقهى",
+      "taxi": "طاكسي",
+      "groceries": "مشتريات",
+      "transport": "نقل"
+    }
   },
   "accounts": {
     "title": "الحسابات",
@@ -142,6 +154,36 @@
     "icon": "أيقونة",
     "nameFrPlaceholder": "مثال: سيارة"
   },
+  "bills": {
+    "title": "الفواتير المتكررة",
+    "add": "فاتورة جديدة",
+    "createTitle": "إنشاء فاتورة",
+    "editTitle": "تعديل الفاتورة",
+    "emptyTitle": "لا توجد فواتير متكررة",
+    "emptyDescription": "أضف فواتيرك حتى لا تنسى مواعيد الدفع.",
+    "nextDueDate": "تاريخ الاستحقاق القادم",
+    "createError": "حدث خطأ أثناء إنشاء الفاتورة",
+    "updateError": "حدث خطأ أثناء تحديث الفاتورة",
+    "deleteError": "حدث خطأ أثناء حذف الفاتورة",
+    "deleteTitle": "حذف الفاتورة",
+    "deleteMessage": "هل تريد حذف هذه الفاتورة المتكررة؟",
+    "fields": {
+      "name": "الاسم",
+      "amount": "المبلغ",
+      "category": "الفئة",
+      "frequency": "التكرار",
+      "nextDueDate": "تاريخ الاستحقاق القادم",
+      "active": "فاتورة نشطة"
+    },
+    "placeholders": {
+      "name": "مثال: إنوي، الماء، الكراء"
+    },
+    "frequency": {
+      "weekly": "أسبوعي",
+      "monthly": "شهري",
+      "yearly": "سنوي"
+    }
+  },
   "settings": {
     "title": "الإعدادات",
     "language": "اللغة",
@@ -157,6 +199,7 @@
     "title": "المزيد",
     "sectionManagement": "الإدارة",
     "sectionPreferences": "التفضيلات",
-    "sectionAccount": "الحساب"
+    "sectionAccount": "الحساب",
+    "bills": "الفواتير المتكررة"
   }
 }

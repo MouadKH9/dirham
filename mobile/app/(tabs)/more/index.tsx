@@ -105,6 +105,11 @@ export default function MoreScreen() {
               label={t('categories.title')}
               onPress={() => router.push('/(tabs)/more/categories')}
             />
+            <MenuRow
+              icon="repeat-outline"
+              label={t('bills.title')}
+              onPress={() => router.push('/(tabs)/more/bills')}
+            />
           </Card>
         </View>
 
