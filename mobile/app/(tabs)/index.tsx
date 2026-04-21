@@ -8,6 +8,7 @@ import { BalanceCard } from '@/components/dashboard/BalanceCard';
 import { AccountPills } from '@/components/dashboard/AccountPills';
 import { MonthlySummary } from '@/components/dashboard/MonthlySummary';
 import { RecentTransactions } from '@/components/dashboard/RecentTransactions';
+import { InsightsEntryCard } from '@/components/dashboard/InsightsEntryCard';
 import { useDashboard } from '@/lib/hooks/useDashboard';
 import { useTransactionsStore } from '@/lib/stores/transactions';
 import { colors } from '@/lib/theme/colors';
@@ -184,6 +185,8 @@ export default function DashboardScreen() {
             onViewAll={() => router.push('/(tabs)/transactions')}
           />
         )}
+
+        <InsightsEntryCard />
       </ScrollView>
     </View>
   );
