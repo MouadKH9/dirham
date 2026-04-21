@@ -69,6 +69,38 @@ export interface BudgetProgress {
   remaining: string;
 }
 
+export type BillFrequency = 'weekly' | 'monthly' | 'yearly';
+
+export interface RecurringBill {
+  id: string;
+  category: string;
+  name: string;
+  amount: string;
+  frequency: BillFrequency;
+  next_due_date: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateRecurringBillInput {
+  category: string;
+  name: string;
+  amount: string;
+  frequency: BillFrequency;
+  next_due_date: string;
+  is_active?: boolean;
+}
+
+export interface UpdateRecurringBillInput {
+  category?: string;
+  name?: string;
+  amount?: string;
+  frequency?: BillFrequency;
+  next_due_date?: string;
+  is_active?: boolean;
+}
+
 export type InsightType = 'breakdown' | 'anomaly' | 'awareness';
 export type InsightSeverity = 'info' | 'warning' | 'critical';
 

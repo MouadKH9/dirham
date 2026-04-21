@@ -1,8 +1,11 @@
 import React from 'react';
 import { Stack } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { colors } from '@/lib/theme/colors';
 
-export default function MoreLayout() {
+export default function BillsLayout() {
+  const { t } = useTranslation();
+
   return (
     <Stack
       screenOptions={{
@@ -12,10 +15,9 @@ export default function MoreLayout() {
         headerBackTitle: '',
       }}
     >
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="settings" options={{ headerShown: true }} />
-      <Stack.Screen name="categories" options={{ headerShown: false }} />
-      <Stack.Screen name="bills" options={{ headerShown: false }} />
+      <Stack.Screen name="index" options={{ title: t('bills.title') }} />
+      <Stack.Screen name="create" options={{ title: t('bills.createTitle') }} />
+      <Stack.Screen name="[id]" options={{ title: t('bills.editTitle') }} />
     </Stack>
   );
 }

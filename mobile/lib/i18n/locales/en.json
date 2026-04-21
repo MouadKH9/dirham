@@ -56,6 +56,12 @@
     "insightsCard": {
       "title": "AI Insights",
       "subtitle": "Review your spending analyses"
+    },
+    "budgetProgress": {
+      "title": "Budget progress",
+      "empty": "No budgets configured for this month.",
+      "remaining": "Remaining",
+      "overBudget": "Over budget"
     }
   },
   "insights": {
@@ -104,7 +110,13 @@
     "allCategories": "All categories",
     "apply": "Apply",
     "reset": "Reset",
-    "noTransactionsWithFilters": "No transactions matching these filters"
+    "noTransactionsWithFilters": "No transactions matching these filters",
+    "quickAdd": {
+      "cafe": "Cafe",
+      "taxi": "Taxi",
+      "groceries": "Groceries",
+      "transport": "Transport"
+    }
   },
   "accounts": {
     "title": "Accounts",
@@ -142,6 +154,36 @@
     "icon": "Icon",
     "nameFrPlaceholder": "E.g: Car"
   },
+  "bills": {
+    "title": "Recurring bills",
+    "add": "New bill",
+    "createTitle": "Create bill",
+    "editTitle": "Edit bill",
+    "emptyTitle": "No recurring bills",
+    "emptyDescription": "Add your recurring bills to avoid missing payment dates.",
+    "nextDueDate": "Next due date",
+    "createError": "Error while creating bill",
+    "updateError": "Error while updating bill",
+    "deleteError": "Error while deleting bill",
+    "deleteTitle": "Delete bill",
+    "deleteMessage": "Do you want to delete this recurring bill?",
+    "fields": {
+      "name": "Name",
+      "amount": "Amount",
+      "category": "Category",
+      "frequency": "Frequency",
+      "nextDueDate": "Next due date",
+      "active": "Bill is active"
+    },
+    "placeholders": {
+      "name": "E.g: Inwi, Water, Rent"
+    },
+    "frequency": {
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "yearly": "Yearly"
+    }
+  },
   "settings": {
     "title": "Settings",
     "language": "Language",
@@ -157,6 +199,7 @@
     "title": "More",
     "sectionManagement": "Management",
     "sectionPreferences": "Preferences",
-    "sectionAccount": "Account"
+    "sectionAccount": "Account",
+    "bills": "Recurring bills"
   }
 }

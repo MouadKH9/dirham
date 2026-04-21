@@ -58,6 +58,12 @@
     "insightsCard": {
       "title": "Insights IA",
       "subtitle": "Consultez vos analyses de dépenses"
+    },
+    "budgetProgress": {
+      "title": "Suivi des budgets",
+      "empty": "Aucun budget configuré pour ce mois.",
+      "remaining": "Restant",
+      "overBudget": "Dépassement"
     }
   },
   "insights": {
@@ -106,7 +112,13 @@
     "allCategories": "Toutes les catégories",
     "apply": "Appliquer",
     "reset": "Réinitialiser",
-    "noTransactionsWithFilters": "Aucune transaction avec ces filtres"
+    "noTransactionsWithFilters": "Aucune transaction avec ces filtres",
+    "quickAdd": {
+      "cafe": "Café",
+      "taxi": "Taxi",
+      "groceries": "Courses",
+      "transport": "Transport"
+    }
   },
   "accounts": {
     "title": "Comptes",
@@ -148,6 +160,36 @@
     "nameFrPlaceholder": "Ex: Voiture",
     "all": "Toutes"
   },
+  "bills": {
+    "title": "Factures récurrentes",
+    "add": "Nouvelle facture",
+    "createTitle": "Créer une facture",
+    "editTitle": "Modifier la facture",
+    "emptyTitle": "Aucune facture récurrente",
+    "emptyDescription": "Ajoutez vos factures pour ne plus oublier les paiements.",
+    "nextDueDate": "Prochaine échéance",
+    "createError": "Erreur lors de la création de la facture",
+    "updateError": "Erreur lors de la mise à jour de la facture",
+    "deleteError": "Erreur lors de la suppression de la facture",
+    "deleteTitle": "Supprimer la facture",
+    "deleteMessage": "Voulez-vous supprimer cette facture récurrente ?",
+    "fields": {
+      "name": "Nom",
+      "amount": "Montant",
+      "category": "Catégorie",
+      "frequency": "Fréquence",
+      "nextDueDate": "Prochaine échéance",
+      "active": "Facture active"
+    },
+    "placeholders": {
+      "name": "Ex: Inwi, Eau, Loyer"
+    },
+    "frequency": {
+      "weekly": "Hebdomadaire",
+      "monthly": "Mensuelle",
+      "yearly": "Annuelle"
+    }
+  },
   "settings": {
     "title": "Paramètres",
     "language": "Langue",
@@ -167,6 +209,7 @@
     "title": "Plus",
     "sectionManagement": "Gestion",
     "sectionPreferences": "Préférences",
-    "sectionAccount": "Compte"
+    "sectionAccount": "Compte",
+    "bills": "Factures récurrentes"
   }
 }

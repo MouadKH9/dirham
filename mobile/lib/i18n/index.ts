@@ -4,7 +4,7 @@ import fr from './locales/fr.json';
 import ar from './locales/ar.json';
 import en from './locales/en.json';
 
-const namespaces = ['app', 'common', 'auth', 'transactions', 'accounts', 'categories', 'settings', 'dashboard', 'insights', 'more'] as const;
+const namespaces = ['app', 'common', 'auth', 'transactions', 'accounts', 'categories', 'settings', 'dashboard', 'insights', 'bills', 'more'] as const;
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -18,6 +18,7 @@ i18n.use(initReactI18next).init({
       settings: fr.settings,
       dashboard: fr.dashboard,
       insights: fr.insights,
+      bills: fr.bills,
       more: fr.more,
     },
     ar: {
@@ -30,6 +31,7 @@ i18n.use(initReactI18next).init({
       settings: ar.settings,
       dashboard: ar.dashboard,
       insights: ar.insights,
+      bills: ar.bills,
       more: ar.more,
     },
     en: {
@@ -42,6 +44,7 @@ i18n.use(initReactI18next).init({
       settings: en.settings,
       dashboard: en.dashboard,
       insights: en.insights,
+      bills: en.bills,
       more: en.more,
     },
   },

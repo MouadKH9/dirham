@@ -9,6 +9,7 @@ import { AccountPills } from '@/components/dashboard/AccountPills';
 import { MonthlySummary } from '@/components/dashboard/MonthlySummary';
 import { RecentTransactions } from '@/components/dashboard/RecentTransactions';
 import { InsightsEntryCard } from '@/components/dashboard/InsightsEntryCard';
+import { BudgetProgressSection } from '@/components/dashboard/BudgetProgressSection';
 import { useDashboard } from '@/lib/hooks/useDashboard';
 import { useTransactionsStore } from '@/lib/stores/transactions';
 import { colors } from '@/lib/theme/colors';
@@ -177,6 +178,10 @@ export default function DashboardScreen() {
 
         {data?.monthly_summary && (
           <MonthlySummary summary={data.monthly_summary} />
+        )}
+
+        {data?.budget_progress && (
+          <BudgetProgressSection budgets={data.budget_progress} />
         )}
 
         {data?.recent_transactions && (
