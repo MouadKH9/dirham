@@ -52,7 +52,29 @@
     "loadError": "Something went wrong",
     "myAccounts": "My accounts",
     "accountTypeManual": "Manual",
-    "accountTypeSynced": "Synced"
+    "accountTypeSynced": "Synced",
+    "insightsCard": {
+      "title": "AI Insights",
+      "subtitle": "Review your spending analyses"
+    }
+  },
+  "insights": {
+    "title": "AI Insights",
+    "error": "Error while loading insights",
+    "empty": {
+      "title": "No insights yet",
+      "description": "Add transactions this week to receive your next analyses."
+    },
+    "types": {
+      "breakdown": "Breakdown",
+      "anomaly": "Anomaly",
+      "awareness": "Trend"
+    },
+    "severity": {
+      "info": "Info",
+      "warning": "Warning",
+      "critical": "Critical"
+    }
   },
   "transactions": {
     "title": "Transactions",

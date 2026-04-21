@@ -69,6 +69,30 @@ export interface BudgetProgress {
   remaining: string;
 }
 
+export type InsightType = 'breakdown' | 'anomaly' | 'awareness';
+export type InsightSeverity = 'info' | 'warning' | 'critical';
+
+export interface AIInsight {
+  id: string;
+  type: InsightType;
+  title: string;
+  body: string;
+  language: 'fr' | 'ar' | 'en';
+  period_start: string;
+  period_end: string;
+  severity: InsightSeverity;
+  is_read: boolean;
+  metadata: Record<string, unknown>;
+  created_at: string;
+}
+
+export interface InsightFilters {
+  is_read?: boolean;
+  type?: InsightType;
+  page?: number;
+  page_size?: number;
+}
+
 export interface DashboardResponse {
   total_balance?: string;
   accounts: Account[];

@@ -52,7 +52,29 @@
     "loadError": "حدث خطأ ما",
     "myAccounts": "حساباتي",
     "accountTypeManual": "يدوي",
-    "accountTypeSynced": "متزامن"
+    "accountTypeSynced": "متزامن",
+    "insightsCard": {
+      "title": "تحليلات الذكاء الاصطناعي",
+      "subtitle": "راجع تحليلات مصروفاتك"
+    }
+  },
+  "insights": {
+    "title": "تحليلات الذكاء الاصطناعي",
+    "error": "حدث خطأ أثناء تحميل التحليلات",
+    "empty": {
+      "title": "لا توجد تحليلات حالياً",
+      "description": "أضف معاملات هذا الأسبوع لتصلك تحليلاتك القادمة."
+    },
+    "types": {
+      "breakdown": "توزيع",
+      "anomaly": "شذوذ",
+      "awareness": "اتجاه"
+    },
+    "severity": {
+      "info": "معلومة",
+      "warning": "تنبيه",
+      "critical": "حرج"
+    }
   },
   "transactions": {
     "title": "المعاملات",

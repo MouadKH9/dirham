@@ -54,7 +54,29 @@
     "loadError": "Une erreur est survenue",
     "myAccounts": "Mes comptes",
     "accountTypeManual": "Manuel",
-    "accountTypeSynced": "Synchronisé"
+    "accountTypeSynced": "Synchronisé",
+    "insightsCard": {
+      "title": "Insights IA",
+      "subtitle": "Consultez vos analyses de dépenses"
+    }
+  },
+  "insights": {
+    "title": "Insights IA",
+    "error": "Erreur lors du chargement des insights",
+    "empty": {
+      "title": "Aucun insight pour l'instant",
+      "description": "Ajoutez des transactions cette semaine pour recevoir vos prochaines analyses."
+    },
+    "types": {
+      "breakdown": "Répartition",
+      "anomaly": "Anomalie",
+      "awareness": "Tendance"
+    },
+    "severity": {
+      "info": "Info",
+      "warning": "Attention",
+      "critical": "Critique"
+    }
   },
   "transactions": {
     "title": "Transactions",
