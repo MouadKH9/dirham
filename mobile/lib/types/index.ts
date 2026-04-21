@@ -63,10 +63,63 @@ export interface MonthlySummary {
 
 export interface BudgetProgress {
   category_id: string;
+  category_ids?: string[];
   category_name: string;
   limit: string;
   spent: string;
   remaining: string;
+}
+
+export interface Budget {
+  id: string;
+  name: string;
+  categories: string[];
+  amount: string;
+  month: string; // YYYY-MM-DD (first day of month)
+  source_recurring_budget: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateBudgetInput {
+  name?: string;
+  categories: string[];
+  amount: string;
+  month: string;
+}
+
+export interface UpdateBudgetInput {
+  name?: string;
+  categories?: string[];
+  amount?: string;
+  month?: string;
+}
+
+export interface RecurringBudget {
+  id: string;
+  name: string;
+  categories: string[];
+  amount: string;
+  start_month: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateRecurringBudgetInput {
+  name?: string;
+  categories: string[];
+  amount: string;
+  start_month: string;
+  is_active?: boolean;
+}
+
+export interface UpdateRecurringBudgetInput {
+  name?: string;
+  categories?: string[];
+  amount?: string;
+  start_month?: string;
+  is_active?: boolean;
 }
 
 export type BillFrequency = 'weekly' | 'monthly' | 'yearly';

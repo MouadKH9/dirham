@@ -128,7 +128,10 @@
     "name": "Account name",
     "currency": "Currency",
     "initialBalance": "Initial balance",
-    "type": { "manual": "Manual", "synced": "Synced" },
+    "type": {
+      "manual": "Manual",
+      "synced": "Synced"
+    },
     "namePlaceholder": "E.g: CIH, Cash, Payoneer",
     "notFound": "Account not found",
     "notFoundDesc": "This account doesn't exist or was deleted.",
@@ -184,6 +187,56 @@
       "yearly": "Yearly"
     }
   },
+  "budgets": {
+    "title": "Budgets",
+    "add": "New budget",
+    "createTitle": "Create budget",
+    "editTitle": "Edit budget",
+    "emptyTitle": "No budgets",
+    "emptyDescription": "Add a budget to track your category spending.",
+    "createError": "Error while creating budget",
+    "updateError": "Error while updating budget",
+    "unknownCategory": "Category",
+    "fields": {
+      "name": "Name",
+      "category": "Category",
+      "amount": "Amount",
+      "month": "Month",
+      "startMonth": "Start month"
+    },
+    "placeholders": {
+      "name": "E.g: Essentials, Family, Transport cap"
+    },
+    "stepLabel": "Step {{current}}/{{total}}",
+    "steps": {
+      "month": "Choose month",
+      "categories": "Choose categories",
+      "amountReview": "Amount and review"
+    },
+    "reviewSummary": "{{amount}} DH across {{count}} categories",
+    "monthSelector": {
+      "previous": "Previous month",
+      "next": "Next month"
+    },
+    "recurring": {
+      "title": "Recurring budgets",
+      "add": "New recurring budget",
+      "createTitle": "Create recurring budget",
+      "editTitle": "Edit recurring budget",
+      "entryDescription": "Manage templates generated every month",
+      "emptyTitle": "No recurring budgets",
+      "emptyDescription": "Create a recurring template to auto-generate monthly budgets.",
+      "createError": "Error while creating recurring budget",
+      "updateError": "Error while updating recurring budget",
+      "active": "Template active",
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
+      "startsFrom": "Starts from {{month}}",
+      "unnamed": "Recurring budget",
+      "createFromBudget": "Save as monthly recurring budget",
+      "manageTemplate": "Open recurring template"
+    }
+  },
   "settings": {
     "title": "Settings",
     "language": "Language",
@@ -191,7 +244,11 @@
     "currencyMAD": "MAD (official)",
     "currencyDH": "DH (common)",
     "version": "Version",
-    "languages": { "fr": "Français", "ar": "العربية", "en": "English" },
+    "languages": {
+      "fr": "Français",
+      "ar": "العربية",
+      "en": "English"
+    },
     "restartRequired": "Restart required",
     "restartMessage": "Please restart the app to activate Arabic language."
   },
@@ -200,6 +257,7 @@
     "sectionManagement": "Management",
     "sectionPreferences": "Preferences",
     "sectionAccount": "Account",
-    "bills": "Recurring bills"
+    "bills": "Recurring bills",
+    "budgets": "Budgets"
   }
 }

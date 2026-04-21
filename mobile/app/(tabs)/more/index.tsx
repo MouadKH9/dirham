@@ -110,6 +110,11 @@ export default function MoreScreen() {
               label={t('bills.title')}
               onPress={() => router.push('/(tabs)/more/bills')}
             />
+            <MenuRow
+              icon="pie-chart-outline"
+              label={t('budgets.title')}
+              onPress={() => router.push('/(tabs)/more/budgets')}
+            />
           </Card>
         </View>
 
