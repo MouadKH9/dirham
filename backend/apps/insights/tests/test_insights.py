@@ -5,6 +5,9 @@ from apps.accounts.tests.factories import UserFactory
 from apps.insights.models import AIInsight
 
 
+_TYPES = ["awareness", "breakdown", "anomaly"]
+
+
 def make_insight(user, **kwargs):
     return AIInsight.objects.create(
         user=user,
@@ -18,6 +21,14 @@ def make_insight(user, **kwargs):
         is_read=kwargs.get("is_read", False),
         metadata=kwargs.get("metadata", {}),
     )
+
+
+def make_insights(user, n, **base_kwargs):
+    """Create n insights for a user with distinct types to satisfy unique_together."""
+    return [
+        make_insight(user, type=_TYPES[i % len(_TYPES)], **base_kwargs)
+        for i in range(n)
+    ]
 
 
 @pytest.mark.django_db
@@ -51,14 +62,14 @@ class TestInsightListView:
         assert "Theirs" not in titles
 
     def test_filter_by_is_read_false(self, authenticated_client, user):
-        make_insight(user, is_read=False)
-        make_insight(user, is_read=True)
+        make_insight(user, type="awareness", is_read=False)
+        make_insight(user, type="breakdown", is_read=True)
         response = authenticated_client.get(self.url + "?is_read=false")
         assert response.data["count"] == 1
 
     def test_filter_by_is_read_true(self, authenticated_client, user):
-        make_insight(user, is_read=False)
-        make_insight(user, is_read=True)
+        make_insight(user, type="awareness", is_read=False)
+        make_insight(user, type="breakdown", is_read=True)
         response = authenticated_client.get(self.url + "?is_read=true")
         assert response.data["count"] == 1
 
@@ -69,14 +80,14 @@ class TestInsightListView:
         assert response.data["count"] == 1
 
     def test_filter_by_language(self, authenticated_client, user):
-        make_insight(user, language="fr")
-        make_insight(user, language="ar")
+        make_insight(user, type="awareness", language="fr")
+        make_insight(user, type="breakdown", language="ar")
         response = authenticated_client.get(self.url + "?language=ar")
         assert response.data["count"] == 1
 
     def test_ordered_newest_first(self, authenticated_client, user):
-        i1 = make_insight(user, title="Older")
-        i2 = make_insight(user, title="Newer")
+        make_insight(user, type="awareness", title="Older")
+        make_insight(user, type="breakdown", title="Newer")
         response = authenticated_client.get(self.url)
         titles = [i["title"] for i in response.data["results"]]
         assert titles.index("Newer") < titles.index("Older")
@@ -120,23 +131,29 @@ class TestMarkInsightRead:
         insight.refresh_from_db()
         assert insight.title == "Original"
 
+    def test_serializer_exposes_created_at_not_generated_at(self, authenticated_client, user):
+        insight = make_insight(user)
+        response = authenticated_client.get(f"/api/v1/insights/{insight.id}/")
+        assert "created_at" in response.data
+        assert "generated_at" not in response.data
+
 
 @pytest.mark.django_db
 class TestUnreadCountView:
     url = "/api/v1/insights/unread-count/"
 
     def test_unread_count_correct(self, authenticated_client, user):
-        make_insight(user, is_read=False)
-        make_insight(user, is_read=False)
-        make_insight(user, is_read=True)
+        make_insight(user, type="awareness", is_read=False)
+        make_insight(user, type="breakdown", is_read=False)
+        make_insight(user, type="anomaly", is_read=True)
         response = authenticated_client.get(self.url)
         assert response.status_code == status.HTTP_200_OK
         assert response.data["count"] == 2
 
     def test_unread_count_only_own(self, authenticated_client, user):
         other = UserFactory()
-        make_insight(other, is_read=False)
-        make_insight(other, is_read=False)
+        make_insight(other, type="awareness", is_read=False)
+        make_insight(other, type="breakdown", is_read=False)
         response = authenticated_client.get(self.url)
         assert response.data["count"] == 0
 
