@@ -16,7 +16,6 @@ def _previous_month_range(today=None):
         period_start = date(first_of_this_month.year - 1, 12, 1)
     else:
         period_start = date(first_of_this_month.year, first_of_this_month.month - 1, 1)
-    # period_end = day before first_of_this_month
     period_end = first_of_this_month.replace(day=1) - __import__("datetime").timedelta(days=1)
     return period_start, period_end
 
@@ -31,44 +30,69 @@ def _parse_period(period_str):
     return period_start, period_end
 
 
-def _build_prompt(user, transactions_qs, period_start, period_end, language):
-    lang_names = {"fr": "French", "ar": "Arabic", "en": "English"}
-    lang_label = lang_names.get(language, "French")
+def _build_metadata(transactions_qs, language):
+    name_field = f"category__name_{language}"
 
-    agg = (
-        transactions_qs
-        .values("type")
-        .annotate(total=Sum("amount"))
-    )
-    summary_lines = [f"  {row['type']}: {row['total']} MAD" for row in agg]
-    summary = "\n".join(summary_lines) or "  No transactions"
-
-    top_categories = (
+    total_spent = (
         transactions_qs
         .filter(type__in=["expense", "bill"])
-        .values("category__name_fr")
+        .aggregate(s=Sum("amount"))["s"] or 0
+    )
+
+    top_categories = list(
+        transactions_qs
+        .filter(type__in=["expense", "bill"])
+        .values(name_field)
         .annotate(total=Sum("amount"))
         .order_by("-total")[:5]
     )
-    cat_lines = [f"  {row['category__name_fr']}: {row['total']} MAD" for row in top_categories]
-    cat_summary = "\n".join(cat_lines) or "  None"
+
+    type_totals = {
+        row["type"]: float(row["total"])
+        for row in transactions_qs.values("type").annotate(total=Sum("amount"))
+    }
+
+    return {
+        "total_transactions": transactions_qs.count(),
+        "total_spent_mad": float(total_spent),
+        "top_categories": [
+            {"name": row[name_field] or "", "amount": float(row["total"])}
+            for row in top_categories
+        ],
+        "totals_by_type": type_totals,
+    }
+
+
+def _build_prompt(transactions_qs, period_start, period_end, language, metadata):
+    lang_names = {"fr": "French", "ar": "Arabic", "en": "English"}
+    lang_label = lang_names.get(language, "French")
+
+    type_lines = "\n".join(
+        f"  {t}: {a} MAD" for t, a in metadata["totals_by_type"].items()
+    ) or "  No transactions"
+
+    cat_lines = "\n".join(
+        f"  {c['name']}: {c['amount']} MAD" for c in metadata["top_categories"]
+    ) or "  None"
 
     return f"""You are a personal finance advisor for a Moroccan user.
-Analyze the following transaction data for {period_start} to {period_end} and generate a single financial insight.
+Analyze the following transaction data for {period_start} to {period_end} and generate 1 to 3 financial insights.
 
 Transaction summary:
-{summary}
+{type_lines}
 
 Top expense categories:
-{cat_summary}
+{cat_lines}
 
-Respond ONLY with a valid JSON object (no markdown, no code fences) with these exact fields:
+Respond ONLY with a valid JSON array (no markdown, no code fences). Each element must have:
 - "type": one of "breakdown", "anomaly", or "awareness"
 - "title": short title (max 80 chars) in {lang_label}
 - "body": insight text (2-4 sentences) in {lang_label}
 - "severity": one of "info", "warning", or "critical"
 
-JSON:"""
+Include only types where you have something meaningful to say. Do not repeat the same type twice.
+
+JSON array:"""
 
 
 class Command(BaseCommand):
@@ -81,11 +105,19 @@ class Command(BaseCommand):
             default=None,
             help="Period in YYYY-MM format. Defaults to previous month.",
         )
+        parser.add_argument(
+            "--overwrite",
+            action="store_true",
+            default=False,
+            help="Delete existing insights for the period before regenerating.",
+        )
 
     def handle(self, *args, **options):
         import anthropic
 
         period_str = options.get("period")
+        overwrite = options.get("overwrite", False)
+
         if period_str:
             period_start, period_end = _parse_period(period_str)
         else:
@@ -108,30 +140,58 @@ class Command(BaseCommand):
             if not transactions_qs.exists():
                 continue
 
+            existing = AIInsight.objects.filter(
+                user=user,
+                period_start=period_start,
+                period_end=period_end,
+            )
+
+            if existing.exists():
+                if overwrite:
+                    existing.delete()
+                    self.stdout.write(f"  Deleted existing insights for {user.email}")
+                else:
+                    self.stdout.write(
+                        f"  Skipping {user.email} — insights already exist "
+                        f"(use --overwrite to regenerate)"
+                    )
+                    continue
+
             language = user.preferred_language or "fr"
-            prompt = _build_prompt(user, transactions_qs, period_start, period_end, language)
+            metadata = _build_metadata(transactions_qs, language)
+            prompt = _build_prompt(
+                transactions_qs, period_start, period_end, language, metadata
+            )
 
             try:
                 response = client.messages.create(
-                    model="claude-opus-4-6",
-                    max_tokens=512,
+                    model="claude-haiku-4-5-20251001",
+                    max_tokens=1024,
                     messages=[{"role": "user", "content": prompt}],
                 )
                 raw = response.content[0].text.strip()
-                data = json.loads(raw)
+                items = json.loads(raw)
 
-                AIInsight.objects.create(
-                    user=user,
-                    type=data["type"],
-                    title=data["title"],
-                    body=data["body"],
-                    severity=data.get("severity", "info"),
-                    language=language,
-                    period_start=period_start,
-                    period_end=period_end,
+                if not isinstance(items, list):
+                    items = [items]
+
+                for item in items:
+                    AIInsight.objects.create(
+                        user=user,
+                        type=item["type"],
+                        title=item["title"],
+                        body=item["body"],
+                        severity=item.get("severity", "info"),
+                        language=language,
+                        period_start=period_start,
+                        period_end=period_end,
+                        metadata=metadata,
+                    )
+                    created_count += 1
+
+                self.stdout.write(
+                    f"  Created {len(items)} insight(s) for {user.email}"
                 )
-                created_count += 1
-                self.stdout.write(f"  Created insight for {user.email}")
 
             except Exception as e:
                 self.stderr.write(f"  Failed for {user.email}: {e}")

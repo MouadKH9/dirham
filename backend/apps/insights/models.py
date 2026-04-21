@@ -1,9 +1,9 @@
-import uuid
 from django.db import models
 from django.conf import settings
+from apps.common.models import TimeStampedModel
 
 
-class AIInsight(models.Model):
+class AIInsight(TimeStampedModel):
     class InsightType(models.TextChoices):
         BREAKDOWN = "breakdown", "Breakdown"
         ANOMALY = "anomaly", "Anomaly"
@@ -19,7 +19,6 @@ class AIInsight(models.Model):
         AR = "ar", "Arabic"
         EN = "en", "English"
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -34,10 +33,10 @@ class AIInsight(models.Model):
     severity = models.CharField(max_length=10, choices=Severity.choices, default=Severity.INFO)
     is_read = models.BooleanField(default=False)
     metadata = models.JSONField(default=dict, blank=True)
-    generated_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ["-generated_at"]
+        ordering = ["-created_at"]
+        unique_together = [("user", "period_start", "period_end", "type")]
 
     def __str__(self):
         return f"{self.title} ({self.user})"

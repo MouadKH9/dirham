@@ -16,7 +16,7 @@ class AIInsightSerializer(serializers.ModelSerializer):
             "severity",
             "is_read",
             "metadata",
-            "generated_at",
+            "created_at",
         ]
         read_only_fields = [
             "id",
@@ -28,5 +28,5 @@ class AIInsightSerializer(serializers.ModelSerializer):
             "period_end",
             "severity",
             "metadata",
-            "generated_at",
+            "created_at",
         ]
