@@ -1,8 +1,9 @@
-import React, { useCallback } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { Alert, Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 
 import { Text, Card, Button } from '@/components/ui';
 import { useAuthStore } from '@/lib/stores/auth';
@@ -28,10 +29,13 @@ export default function SettingsScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const logout = useAuthStore((s) => s.logout);
+  const user = useAuthStore((s) => s.user);
+  const setAiInsightsEnabled = useAuthStore((s) => s.setAiInsightsEnabled);
   const language = useSettingsStore((s) => s.language);
   const currencyDisplay = useSettingsStore((s) => s.currencyDisplay);
   const setLanguage = useSettingsStore((s) => s.setLanguage);
   const setCurrencyDisplay = useSettingsStore((s) => s.setCurrencyDisplay);
+  const [aiToggling, setAiToggling] = useState(false);
 
   const handleLanguageSelect = useCallback(async (lang: Language) => {
     await setLanguage(lang);
@@ -61,6 +65,35 @@ export default function SettingsScreen() {
       ],
     );
   };
+
+  const performAiToggle = useCallback(async (next: boolean) => {
+    setAiToggling(true);
+    try {
+      await setAiInsightsEnabled(next);
+    } catch {
+      Alert.alert(t('common.error'), t('common.error'));
+    } finally {
+      setAiToggling(false);
+    }
+  }, [setAiInsightsEnabled, t]);
+
+  const handleAiToggle = useCallback((next: boolean) => {
+    if (next) {
+      Alert.alert(
+        t('settings.aiInsights'),
+        t('settings.aiInsightsDescription'),
+        [
+          { text: t('common.cancel'), style: 'cancel' },
+          {
+            text: t('common.confirm'),
+            onPress: () => { void performAiToggle(true); },
+          },
+        ],
+      );
+    } else {
+      void performAiToggle(false);
+    }
+  }, [performAiToggle, t]);
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
@@ -123,6 +156,75 @@ export default function SettingsScreen() {
           </Card>
         </View>
 
+        {/* AI insights section */}
+        <View style={styles.section}>
+          <Text variant="caption" style={styles.sectionTitle}>
+            {t('settings.aiInsights')}
+          </Text>
+          <Card style={styles.card}>
+            <View style={styles.toggleRow}>
+              <View style={styles.toggleLabel}>
+                <Text variant="body" style={styles.toggleTitle}>
+                  {t('settings.aiInsights')}
+                </Text>
+                <Text variant="caption" style={styles.toggleDescription}>
+                  {t('settings.aiInsightsDescription')}
+                </Text>
+              </View>
+              <Switch
+                value={user?.ai_insights_enabled ?? false}
+                onValueChange={handleAiToggle}
+                disabled={aiToggling}
+                trackColor={{ false: colors.border, true: colors.terracotta }}
+                thumbColor={colors.white}
+              />
+            </View>
+            <Pressable
+              style={({ pressed }) => [styles.learnMoreRow, pressed && styles.learnMorePressed]}
+              onPress={() => router.push('/(tabs)/more/legal?doc=privacy')}
+            >
+              <Ionicons name="information-circle-outline" size={16} color={colors.terracotta} />
+              <Text variant="caption" style={styles.learnMoreText}>
+                {t('settings.aiInsightsLearnMore')}
+              </Text>
+            </Pressable>
+          </Card>
+        </View>
+
+        {/* Legal section */}
+        <View style={styles.section}>
+          <Text variant="caption" style={styles.sectionTitle}>
+            {t('settings.sectionLegal')}
+          </Text>
+          <Card style={styles.linkCard}>
+            <Pressable
+              style={({ pressed }) => [styles.linkRow, pressed && styles.linkRowPressed]}
+              onPress={() => router.push('/(tabs)/more/legal?doc=privacy')}
+            >
+              <View style={styles.linkRowLeft}>
+                <Ionicons name="lock-closed-outline" size={18} color={colors.terracotta} />
+                <Text variant="body" style={styles.linkLabel}>
+                  {t('settings.privacyPolicy')}
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+            </Pressable>
+            <View style={styles.divider} />
+            <Pressable
+              style={({ pressed }) => [styles.linkRow, pressed && styles.linkRowPressed]}
+              onPress={() => router.push('/(tabs)/more/legal?doc=terms')}
+            >
+              <View style={styles.linkRowLeft}>
+                <Ionicons name="document-text-outline" size={18} color={colors.terracotta} />
+                <Text variant="body" style={styles.linkLabel}>
+                  {t('settings.termsOfService')}
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+            </Pressable>
+          </Card>
+        </View>
+
         {/* Account section */}
         <View style={styles.section}>
           <Text variant="caption" style={styles.sectionTitle}>
@@ -131,6 +233,15 @@ export default function SettingsScreen() {
           <Button onPress={handleLogout} variant="danger">
             {t('auth.logout')}
           </Button>
+          <Pressable
+            style={({ pressed }) => [styles.deleteRow, pressed && styles.deleteRowPressed]}
+            onPress={() => router.push('/(tabs)/more/delete-account')}
+          >
+            <Ionicons name="trash-outline" size={18} color={colors.error} />
+            <Text variant="body" style={styles.deleteLabel}>
+              {t('deleteAccount.title')}
+            </Text>
+          </Pressable>
         </View>
 
         {/* Version */}
@@ -193,6 +304,81 @@ const styles = StyleSheet.create({
   note: {
     color: colors.textMuted,
     fontStyle: 'italic',
+  },
+  toggleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: spacing.md,
+  },
+  toggleLabel: {
+    flex: 1,
+    gap: spacing.xs,
+  },
+  toggleTitle: {
+    color: colors.textPrimary,
+    fontWeight: '600',
+  },
+  toggleDescription: {
+    color: colors.textSecondary,
+    lineHeight: 18,
+  },
+  learnMoreRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    alignSelf: 'flex-start',
+    paddingTop: spacing.xs,
+  },
+  learnMorePressed: {
+    opacity: 0.6,
+  },
+  learnMoreText: {
+    color: colors.terracotta,
+    fontWeight: '600',
+  },
+  linkCard: {
+    padding: 0,
+    overflow: 'hidden',
+  },
+  linkRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md,
+  },
+  linkRowPressed: {
+    backgroundColor: colors.cream,
+  },
+  linkRowLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  linkLabel: {
+    color: colors.textPrimary,
+    fontWeight: '500',
+  },
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: colors.border,
+    marginHorizontal: spacing.md,
+  },
+  deleteRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    paddingVertical: spacing.sm,
+    marginTop: spacing.xs,
+  },
+  deleteRowPressed: {
+    opacity: 0.7,
+  },
+  deleteLabel: {
+    color: colors.error,
+    fontWeight: '600',
   },
   version: {
     textAlign: 'center',

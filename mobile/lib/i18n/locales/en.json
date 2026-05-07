@@ -17,7 +17,14 @@
   },
   "auth": {
     "welcome": "Welcome to Dirham",
-    "welcomeSubtitle": "Manage your finances in Morocco",
+    "welcomeSubtitle": "الدرهم ما يفلت",
+    "promoHeading": "Your finances, under control.",
+    "promoFeature1Title": "Real-time tracking",
+    "promoFeature1Desc": "Log every expense in under 15 seconds.",
+    "promoFeature2Title": "Recurring bills",
+    "promoFeature2Desc": "Never miss a due date — get reminders.",
+    "promoFeature3Title": "Weekly AI insights",
+    "promoFeature3Desc": "Personalised tips to help you spend less.",
     "login": "Sign in",
     "register": "Create account",
     "email": "Email address",
@@ -34,7 +41,11 @@
     "passwordTooShort": "Password must be at least 8 characters",
     "passwordMismatch": "Passwords don't match",
     "loginError": "Incorrect email or password",
-    "registerError": "Error creating account"
+    "registerError": "Error creating account",
+    "consentByCreating": "By creating an account, you agree to our",
+    "consentTerms": "Terms of Service",
+    "consentAnd": "and our",
+    "consentPrivacy": "Privacy Policy"
   },
   "dashboard": {
     "title": "Home",
@@ -151,11 +162,9 @@
     "add": "New category",
     "create": "Create category",
     "emptyTitle": "No categories",
-    "nameFr": "Name in French",
-    "nameAr": "Name in Arabic (optional)",
-    "nameEn": "Name in English (optional)",
-    "icon": "Icon",
-    "nameFrPlaceholder": "E.g: Car"
+    "name": "Name",
+    "namePlaceholder": "E.g: Car",
+    "icon": "Icon"
   },
   "bills": {
     "title": "Recurring bills",
@@ -250,7 +259,29 @@
       "en": "English"
     },
     "restartRequired": "Restart required",
-    "restartMessage": "Please restart the app to activate Arabic language."
+    "restartMessage": "Please restart the app to activate Arabic language.",
+    "sectionLegal": "Legal",
+    "privacyPolicy": "Privacy policy",
+    "termsOfService": "Terms of service",
+    "viewOnline": "View latest version online",
+    "aiInsights": "AI insights",
+    "aiInsightsDescription": "Generate weekly spending insights using Google Gemini. We only send aggregated category totals — never merchant names or notes.",
+    "aiInsightsLearnMore": "Read what we send"
+  },
+  "deleteAccount": {
+    "title": "Delete account",
+    "description": "Permanently delete your account and all associated data. This action cannot be undone.",
+    "whatHappens": "What gets deleted",
+    "bullet1": "Your account, email and password",
+    "bullet2": "All your transactions, accounts, categories and budgets",
+    "bullet3": "All your AI-generated insights and recurring bills",
+    "bullet4": "Backup copies are purged within 30 days",
+    "accountLabel": "Signed in as",
+    "confirmLabel": "Type {{keyword}} to confirm",
+    "confirmButton": "Delete my account",
+    "alertTitle": "Delete account?",
+    "alertMessage": "This will permanently delete your account and all your data. This action cannot be undone.",
+    "errorMessage": "We could not delete your account. Please try again or contact support."
   },
   "more": {
     "title": "More",

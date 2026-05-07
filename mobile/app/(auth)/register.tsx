@@ -115,6 +115,24 @@ export default function RegisterScreen() {
           {t('register')}
         </Button>
 
+        <Text style={styles.consentText}>
+          {t('consentByCreating')}{' '}
+          <Text
+            style={styles.consentLink}
+            onPress={() => router.push('/(tabs)/more/legal?doc=terms')}
+          >
+            {t('consentTerms')}
+          </Text>{' '}
+          {t('consentAnd')}{' '}
+          <Text
+            style={styles.consentLink}
+            onPress={() => router.push('/(tabs)/more/legal?doc=privacy')}
+          >
+            {t('consentPrivacy')}
+          </Text>
+          .
+        </Text>
+
         <Pressable
           onPress={() => router.push('/(auth)/login')}
           style={styles.linkRow}
@@ -170,6 +188,18 @@ const styles = StyleSheet.create({
   submitButton: {
     marginTop: spacing.sm,
     width: '100%',
+  },
+  consentText: {
+    marginTop: spacing.md,
+    fontSize: 12,
+    color: colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: 18,
+  },
+  consentLink: {
+    color: colors.terracotta,
+    fontWeight: '600',
+    textDecorationLine: 'underline',
   },
   linkRow: {
     marginTop: spacing.lg,

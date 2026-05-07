@@ -1,9 +1,11 @@
 import json
+import time
 from datetime import date
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from django.db.models import Sum
 from apps.accounts.models import User
+from apps.common import analytics
 from apps.transactions.models import Transaction
 from apps.insights.models import AIInsight
 
@@ -111,26 +113,56 @@ class Command(BaseCommand):
             default=False,
             help="Delete existing insights for the period before regenerating.",
         )
+        parser.add_argument(
+            "--user",
+            type=str,
+            default=None,
+            help="Only generate insights for this email address.",
+        )
 
     def handle(self, *args, **options):
-        import anthropic
+        from google import genai
 
         period_str = options.get("period")
         overwrite = options.get("overwrite", False)
+        started_at = time.monotonic()
 
         if period_str:
             period_start, period_end = _parse_period(period_str)
         else:
             period_start, period_end = _previous_month_range()
 
+        period_label = period_start.strftime("%Y-%m")
+
         self.stdout.write(f"Generating insights for {period_start} to {period_end}")
 
-        client = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
+        try:
+            client = genai.Client(api_key=settings.GEMINI_API_KEY)
+        except Exception as exc:
+            analytics.capture(
+                "system",
+                "insights_generation_failed",
+                {"period": period_label, "error_class": type(exc).__name__},
+            )
+            raise
 
-        users = User.objects.filter(is_active=True)
+        # App Review Guideline 5.1.2(i): only process users who have explicitly
+        # opted in to AI insights. The flag defaults to False so a transaction
+        # is NEVER sent to the third-party AI provider without consent.
+        users = User.objects.filter(is_active=True, ai_insights_enabled=True)
+        if options.get("user"):
+            users = users.filter(email=options["user"])
+            if not users.exists():
+                self.stderr.write(
+                    f"No active, AI-enabled user found with email: {options['user']}"
+                )
+                return
         created_count = 0
+        users_processed = 0
+        users_with_transactions = 0
 
         for user in users:
+            users_processed += 1
             transactions_qs = Transaction.objects.filter(
                 user=user,
                 date__gte=period_start,
@@ -139,6 +171,8 @@ class Command(BaseCommand):
 
             if not transactions_qs.exists():
                 continue
+
+            users_with_transactions += 1
 
             existing = AIInsight.objects.filter(
                 user=user,
@@ -164,13 +198,17 @@ class Command(BaseCommand):
             )
 
             try:
-                response = client.messages.create(
-                    model="claude-haiku-4-5-20251001",
-                    max_tokens=1024,
-                    messages=[{"role": "user", "content": prompt}],
+                response = client.models.generate_content(
+                    model="gemini-3.1-flash-lite-preview",
+                    contents=prompt,
                 )
-                raw = response.content[0].text.strip()
-                items = json.loads(raw)
+                raw = response.text.strip()
+                # Strip markdown code fences if the model wraps the JSON
+                if raw.startswith("```"):
+                    raw = raw.split("```")[1]
+                    if raw.startswith("json"):
+                        raw = raw[4:]
+                items = json.loads(raw.strip())
 
                 if not isinstance(items, list):
                     items = [items]
@@ -195,5 +233,21 @@ class Command(BaseCommand):
 
             except Exception as e:
                 self.stderr.write(f"  Failed for {user.email}: {e}")
+            else:
+                # Stay within free tier: 15 RPM → wait 5s between users
+                time.sleep(5)
+
+        duration_ms = int((time.monotonic() - started_at) * 1000)
+        analytics.capture(
+            "system",
+            "insights_generation_completed",
+            {
+                "period": period_label,
+                "users_processed": users_processed,
+                "users_with_transactions": users_with_transactions,
+                "insights_created": created_count,
+                "duration_ms": duration_ms,
+            },
+        )
 
         self.stdout.write(self.style.SUCCESS(f"Done. Created {created_count} insights."))

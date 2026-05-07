@@ -9,6 +9,7 @@ interface CategoriesState {
 
   fetchCategories: () => Promise<void>;
   createCategory: (data: CreateCategoryInput) => Promise<Category>;
+  deleteCategory: (id: string) => Promise<void>;
   reset: () => void;
 }
 
@@ -31,6 +32,11 @@ export const useCategoriesStore = create<CategoriesState>((set) => ({
     const category = await categoriesApi.create(data);
     set((state) => ({ categories: [...state.categories, category] }));
     return category;
+  },
+
+  deleteCategory: async (id) => {
+    await categoriesApi.delete(id);
+    set((state) => ({ categories: state.categories.filter((c) => c.id !== id) }));
   },
 
   reset: () => set({ categories: [], isLoading: false, error: null }),

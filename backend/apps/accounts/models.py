@@ -18,6 +18,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_length=2, choices=Language.choices, default=Language.FRENCH
     )
     preferred_currency = models.CharField(max_length=3, default="MAD")
+    # Off by default. The user must explicitly opt in before any data is sent
+    # to the third-party AI provider (Apple App Review Guideline 5.1.2(i)).
+    ai_insights_enabled = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

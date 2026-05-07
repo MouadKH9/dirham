@@ -10,6 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { isAxiosError } from 'axios';
 
 import { Text, Input, Button } from '@/components/ui';
 import { useCategoriesStore } from '@/lib/stores/categories';
@@ -34,31 +35,37 @@ export default function CreateCategoryScreen() {
   const createCategory = useCategoriesStore((s) => s.createCategory);
 
   const [selectedEmoji, setSelectedEmoji] = useState(EMOJI_OPTIONS[0]);
-  const [nameFr, setNameFr] = useState('');
-  const [nameAr, setNameAr] = useState('');
-  const [nameEn, setNameEn] = useState('');
+  const [name, setName] = useState('');
   const [type, setType] = useState<NonNullable<CategoryType>>('expense');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const isValid = nameFr.trim().length > 0;
+  const isValid = name.trim().length > 0;
 
   const handleCreate = async () => {
     if (!isValid) return;
     setIsLoading(true);
     setError(null);
     try {
+      const trimmed = name.trim();
       const input: CreateCategoryInput & { type?: NonNullable<CategoryType> } = {
-        name_fr: nameFr.trim(),
-        name_ar: nameAr.trim() || undefined,
-        name_en: nameEn.trim() || undefined,
+        name_fr: trimmed,
+        name_ar: trimmed,
+        name_en: trimmed,
         icon: selectedEmoji,
         type,
       };
       await createCategory(input);
       router.back();
-    } catch {
-      setError(t('common.error'));
+    } catch (err) {
+      if (isAxiosError(err) && err.response?.data) {
+        const data = err.response.data as Record<string, string | string[]>;
+        const firstField = Object.values(data)[0];
+        const message = Array.isArray(firstField) ? firstField[0] : firstField;
+        setError(typeof message === 'string' ? message : t('common.error'));
+      } else {
+        setError(t('common.error'));
+      }
     } finally {
       setIsLoading(false);
     }
@@ -97,34 +104,13 @@ export default function CreateCategoryScreen() {
             </View>
           </View>
 
-          {/* Name FR (required) */}
           <Input
-            label={t('categories.nameFr')}
-            value={nameFr}
-            onChangeText={setNameFr}
-            placeholder={t('categories.nameFrPlaceholder')}
+            label={t('categories.name')}
+            value={name}
+            onChangeText={setName}
+            placeholder={t('categories.namePlaceholder')}
             maxLength={100}
             autoFocus
-            returnKeyType="next"
-          />
-
-          {/* Name AR (optional) */}
-          <Input
-            label={t('categories.nameAr')}
-            value={nameAr}
-            onChangeText={setNameAr}
-            placeholder=""
-            maxLength={100}
-            returnKeyType="next"
-          />
-
-          {/* Name EN (optional) */}
-          <Input
-            label={t('categories.nameEn')}
-            value={nameEn}
-            onChangeText={setNameEn}
-            placeholder=""
-            maxLength={100}
             returnKeyType="done"
           />
 

@@ -81,7 +81,11 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-ANTHROPIC_API_KEY = config("ANTHROPIC_API_KEY", default="")
+GEMINI_API_KEY = config("GEMINI_API_KEY", default="")
+
+POSTHOG_API_KEY = config("POSTHOG_API_KEY", default="")
+POSTHOG_HOST = config("POSTHOG_HOST", default="https://us.i.posthog.com")
+POSTHOG_ENABLED = config("POSTHOG_ENABLED", default=False, cast=bool)
 
 LANGUAGE_CODE = "fr"
 LANGUAGES = [

@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
+from apps.common import analytics
 from .models import Account
 from .serializers import (
     RegisterSerializer,
@@ -23,6 +24,14 @@ class RegisterView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         refresh = RefreshToken.for_user(user)
+        analytics.capture(
+            user,
+            "signup_completed",
+            {
+                "preferred_language": user.preferred_language,
+                "source": "backend",
+            },
+        )
         return Response(
             {
                 "user": UserSerializer(user).data,
@@ -54,12 +63,31 @@ class LogoutView(generics.GenericAPIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class MeView(generics.RetrieveAPIView):
+class MeView(generics.RetrieveUpdateDestroyAPIView):
+    """Retrieve, update, or delete the authenticated user.
+
+    PATCH lets the user update preferences (language, currency, AI consent).
+    DELETE permanently removes the user account and cascades to all related
+    data (accounts, transactions, categories, budgets, bills, insights, sync
+    logs). Required by App Store Review Guideline 5.1.1(v).
+    """
+
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
+    http_method_names = ["get", "patch", "delete", "head", "options"]
 
     def get_object(self):
         return self.request.user
+
+    def destroy(self, request, *args, **kwargs):
+        user = self.get_object()
+        # Cascade deletion removes accounts, transactions, categories, budgets,
+        # bills, insights, sync logs, plus all outstanding/blacklisted JWT
+        # tokens (FK CASCADE in simplejwt's token_blacklist app). Any access
+        # token still in flight will fail at JWTAuthentication because the user
+        # row no longer exists.
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AccountListCreateView(generics.ListCreateAPIView):

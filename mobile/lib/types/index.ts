@@ -3,6 +3,7 @@ export interface User {
   email: string;
   preferred_language: 'fr' | 'ar' | 'en';
   preferred_currency: string;
+  ai_insights_enabled: boolean;
   created_at: string;
 }
 

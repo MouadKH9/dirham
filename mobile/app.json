@@ -6,24 +6,60 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
+    "icon": "./assets/images/logo.png",
     "splash": {
+      "image": "./assets/images/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#FBF7F0"
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.dirham.app"
+      "bundleIdentifier": "com.dirham.app",
+      "buildNumber": "1",
+      "requireFullScreen": true,
+      "config": {
+        "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "LSApplicationCategoryType": "public.app-category.finance",
+        "ITSAppUsesNonExemptEncryption": false,
+        "CFBundleLocalizations": ["fr", "ar", "en"],
+        "CFBundleAllowMixedLocalizations": true
+      },
+      "privacyManifests": {
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": ["CA92.1"]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+            "NSPrivacyAccessedAPITypeReasons": ["C617.1"]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+            "NSPrivacyAccessedAPITypeReasons": ["35F9.1"]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+            "NSPrivacyAccessedAPITypeReasons": ["E174.1"]
+          }
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#C45E3E"
+        "foregroundImage": "./assets/images/logo.png",
+        "backgroundColor": "#FBF7F0"
       },
-      "package": "com.dirham.app"
+      "package": "com.dirham.app",
+      "versionCode": 1
     },
     "plugins": [
       "expo-router",
       "expo-font",
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-localization"
     ]
   }
 }

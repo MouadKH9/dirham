@@ -31,4 +31,13 @@ export const authApi = {
   async logout(refreshToken: string): Promise<void> {
     await apiClient.post('/auth/logout/', { refresh: refreshToken });
   },
+
+  async deleteAccount(): Promise<void> {
+    await apiClient.delete('/auth/me/');
+  },
+
+  async updatePreferences(patch: Partial<Pick<User, 'ai_insights_enabled' | 'preferred_language' | 'preferred_currency'>>): Promise<User> {
+    const response = await apiClient.patch<User>('/auth/me/', patch);
+    return response.data;
+  },
 };
