@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import pytest
 from django.urls import reverse
 from rest_framework import status
@@ -39,6 +41,28 @@ class TestRegisterView:
     def test_register_missing_email_returns_400(self, api_client):
         response = api_client.post(self.url, {"password": "securepass123"})
         assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    def test_register_emits_privacy_safe_signup_event(self, api_client):
+        with patch("apps.accounts.views.analytics.capture") as capture:
+            response = api_client.post(
+                self.url,
+                {
+                    "email": "analytics@example.com",
+                    "password": "securepass123",
+                },
+            )
+
+        assert response.status_code == status.HTTP_201_CREATED
+        capture.assert_called_once()
+        args, kwargs = capture.call_args
+        user_arg, event_name, properties = args
+        user = User.objects.get(email="analytics@example.com")
+
+        assert user_arg.id == user.id
+        assert event_name == "signup_completed"
+        assert properties == {"preferred_language": "fr", "source": "backend"}
+        assert "email" not in properties
+        assert "password" not in properties
 
 
 @pytest.mark.django_db
@@ -100,6 +124,49 @@ class TestLogoutView:
     def test_logout_requires_authentication(self, api_client):
         response = api_client.post(self.logout_url, {"refresh": "sometoken"})
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.django_db
+class TestMeViewDelete:
+    """App Store Review Guideline 5.1.1(v) — in-app account deletion."""
+
+    url = "/api/v1/auth/me/"
+
+    def test_delete_requires_authentication(self, api_client):
+        response = api_client.delete(self.url)
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+    def test_delete_returns_204(self, authenticated_client):
+        response = authenticated_client.delete(self.url)
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+
+    def test_delete_removes_user(self, authenticated_client, user):
+        user_id = user.id
+        authenticated_client.delete(self.url)
+        assert not User.objects.filter(id=user_id).exists()
+
+    def test_delete_cascades_to_accounts(self, authenticated_client, user):
+        user_id = user.id
+        assert Account.objects.filter(user_id=user_id).exists()
+        authenticated_client.delete(self.url)
+        assert not Account.objects.filter(user_id=user_id).exists()
+
+    def test_deleted_user_cannot_access_protected_endpoints(self, api_client):
+        UserFactory(email="todelete@example.com")
+        login_resp = api_client.post(
+            "/api/v1/auth/login/",
+            {"email": "todelete@example.com", "password": "testpass123"},
+        )
+        access_token = login_resp.data["access"]
+
+        api_client.credentials(HTTP_AUTHORIZATION=f"Bearer {access_token}")
+        delete_resp = api_client.delete(self.url)
+        assert delete_resp.status_code == status.HTTP_204_NO_CONTENT
+
+        # Any further request with the same access token must fail because the
+        # user row no longer exists in the database.
+        followup = api_client.get("/api/v1/accounts/")
+        assert followup.status_code == status.HTTP_401_UNAUTHORIZED
 
 
 @pytest.mark.django_db

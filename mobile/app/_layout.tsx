@@ -6,6 +6,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 import { useFonts, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
 import * as SecureStore from 'expo-secure-store';
+import { PostHogProvider } from 'posthog-react-native';
+import { getPostHogClient } from '@/lib/analytics';
 import { useAuthStore } from '@/lib/stores/auth';
 import { useSettingsStore } from '@/lib/stores/settings';
 
@@ -56,11 +58,28 @@ export default function RootLayout() {
     return null;
   }
 
-  return (
+  const tree = (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <Stack screenOptions={{ headerShown: false }} />
       </SafeAreaProvider>
     </GestureHandlerRootView>
+  );
+
+  const posthogClient = getPostHogClient();
+  if (!posthogClient) {
+    return tree;
+  }
+
+  return (
+    <PostHogProvider
+      client={posthogClient}
+      autocapture={{
+        captureScreens: false,
+        captureTouches: false,
+      }}
+    >
+      {tree}
+    </PostHogProvider>
   );
 }

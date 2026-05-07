@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -40,9 +40,10 @@ function typeBadgeColor(type: Category['type']): string {
 interface CategoryRowProps {
   category: Category;
   t: (key: string) => string;
+  onDelete?: () => void;
 }
 
-function CategoryRow({ category, t }: CategoryRowProps) {
+function CategoryRow({ category, t, onDelete }: CategoryRowProps) {
   const label = typeBadgeLabel(category.type, t);
   const badgeColor = typeBadgeColor(category.type);
 
@@ -57,6 +58,11 @@ function CategoryRow({ category, t }: CategoryRowProps) {
       <View style={[styles.typeBadge, { backgroundColor: badgeColor + '20', borderColor: badgeColor }]}>
         <Text style={styles.typeBadgeText} color={badgeColor}>{label}</Text>
       </View>
+      {onDelete && (
+        <Pressable onPress={onDelete} hitSlop={8} style={styles.deleteButton}>
+          <Ionicons name="trash-outline" size={18} color={colors.error} />
+        </Pressable>
+      )}
     </View>
   );
 }
@@ -69,6 +75,22 @@ export default function CategoriesScreen() {
   const categories = useCategoriesStore((s) => s.categories);
   const isLoading = useCategoriesStore((s) => s.isLoading);
   const fetchCategories = useCategoriesStore((s) => s.fetchCategories);
+  const deleteCategory = useCategoriesStore((s) => s.deleteCategory);
+
+  const handleDelete = useCallback((category: Category) => {
+    Alert.alert(
+      t('common.delete'),
+      getLocalizedName(category),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('common.delete'),
+          style: 'destructive',
+          onPress: () => { void deleteCategory(category.id); },
+        },
+      ],
+    );
+  }, [deleteCategory, t]);
 
   useFocusEffect(
     useCallback(() => {
@@ -129,7 +151,7 @@ export default function CategoriesScreen() {
             <Card style={styles.listCard}>
               {customCategories.map((cat, idx) => (
                 <View key={cat.id}>
-                  <CategoryRow category={cat} t={t} />
+                  <CategoryRow category={cat} t={t} onDelete={() => handleDelete(cat)} />
                   {idx < customCategories.length - 1 && <View style={styles.separator} />}
                 </View>
               ))}
@@ -216,5 +238,9 @@ const styles = StyleSheet.create({
   },
   headerButton: {
     paddingRight: spacing.sm,
+  },
+  deleteButton: {
+    padding: spacing.xs,
+    marginLeft: spacing.xs,
   },
 });

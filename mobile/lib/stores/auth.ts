@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import * as SecureStore from 'expo-secure-store';
 import { authApi } from '@/lib/api/auth';
 import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY, apiClient } from '@/lib/api/client';
+import { captureEvent, identifyUser, resetAnalytics } from '@/lib/analytics';
 import type { User } from '@/lib/types';
 
 interface AuthState {
@@ -15,6 +16,8 @@ interface AuthState {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, language?: string) => Promise<void>;
   logout: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
+  setAiInsightsEnabled: (enabled: boolean) => Promise<void>;
   checkAuth: () => Promise<void>;
   updateUser: (data: Partial<User>) => void;
   clearError: () => void;
@@ -51,6 +54,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         }
       }
 
+      identifyUser(freshUser);
       set({ user: freshUser, isAuthenticated: true, isLoading: false });
     } catch {
       set({ isAuthenticated: false, isLoading: false });
@@ -65,6 +69,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, tokens.refresh);
       await SecureStore.setItemAsync('dirham_user', JSON.stringify(user));
       apiClient.defaults.headers.common.Authorization = `Bearer ${tokens.access}`;
+      identifyUser(user);
+      captureEvent('login_completed', { method: 'password' });
       set({ user, isAuthenticated: true, isSubmitting: false });
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erreur de connexion';
@@ -80,6 +86,11 @@ export const useAuthStore = create<AuthState>((set) => ({
       await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, tokens.refresh);
       await SecureStore.setItemAsync('dirham_user', JSON.stringify(user));
       apiClient.defaults.headers.common.Authorization = `Bearer ${tokens.access}`;
+      identifyUser(user);
+      captureEvent('signup_completed', {
+        preferred_language: user.preferred_language,
+        source: 'mobile',
+      });
       set({ user, isAuthenticated: true, isSubmitting: false });
     } catch (err) {
       const message = err instanceof Error ? err.message : "Erreur lors de l'inscription";
@@ -98,12 +109,50 @@ export const useAuthStore = create<AuthState>((set) => ({
     await SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY);
     await SecureStore.deleteItemAsync('dirham_user');
     delete apiClient.defaults.headers.common.Authorization;
+    captureEvent('logout_completed');
+    resetAnalytics();
     set({ user: null, isAuthenticated: false });
+  },
+
+  setAiInsightsEnabled: async (enabled) => {
+    const previous = useAuthStore.getState().user;
+    if (previous) {
+      set({ user: { ...previous, ai_insights_enabled: enabled } });
+    }
+    try {
+      const updated = await authApi.updatePreferences({ ai_insights_enabled: enabled });
+      await SecureStore.setItemAsync('dirham_user', JSON.stringify(updated));
+      set({ user: updated });
+      captureEvent(enabled ? 'ai_insights_enabled' : 'ai_insights_disabled');
+    } catch (err) {
+      if (previous) set({ user: previous });
+      throw err;
+    }
+  },
+
+  deleteAccount: async () => {
+    set({ error: null, isSubmitting: true });
+    try {
+      await authApi.deleteAccount();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Erreur lors de la suppression du compte';
+      set({ isSubmitting: false, error: message });
+      throw err;
+    }
+    await SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY);
+    await SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY);
+    await SecureStore.deleteItemAsync('dirham_user');
+    delete apiClient.defaults.headers.common.Authorization;
+    resetAnalytics();
+    set({ user: null, isAuthenticated: false, isSubmitting: false });
   },
 
   updateUser: (data) => set((state) => ({ user: state.user ? { ...state.user, ...data } : null })),
 
   clearError: () => set({ error: null }),
 
-  _clearAuth: () => set({ user: null, isAuthenticated: false }),
+  _clearAuth: () => {
+    resetAnalytics();
+    set({ user: null, isAuthenticated: false });
+  },
 }));

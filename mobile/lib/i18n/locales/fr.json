@@ -17,7 +17,14 @@
   },
   "auth": {
     "welcome": "Bienvenue sur Dirham",
-    "welcomeSubtitle": "Gérez vos finances au Maroc",
+    "welcomeSubtitle": "الدرهم ما يفلت",
+    "promoHeading": "Vos finances, maîtrisées.",
+    "promoFeature1Title": "Suivi en temps réel",
+    "promoFeature1Desc": "Enregistrez chaque dépense en moins de 15 secondes.",
+    "promoFeature2Title": "Factures récurrentes",
+    "promoFeature2Desc": "Ne ratez plus aucune échéance, recevez des rappels.",
+    "promoFeature3Title": "Insights IA chaque semaine",
+    "promoFeature3Desc": "Des conseils personnalisés pour dépenser moins.",
     "login": "Se connecter",
     "register": "Créer un compte",
     "email": "Adresse e-mail",
@@ -36,7 +43,11 @@
     "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères",
     "passwordMismatch": "Les mots de passe ne correspondent pas",
     "loginError": "Email ou mot de passe incorrect",
-    "registerError": "Erreur lors de la création du compte"
+    "registerError": "Erreur lors de la création du compte",
+    "consentByCreating": "En créant un compte, vous acceptez nos",
+    "consentTerms": "Conditions d'utilisation",
+    "consentAnd": "et notre",
+    "consentPrivacy": "Politique de confidentialité"
   },
   "dashboard": {
     "title": "Accueil",
@@ -153,11 +164,9 @@
     "add": "Nouvelle catégorie",
     "create": "Créer une catégorie",
     "emptyTitle": "Aucune catégorie",
-    "nameFr": "Nom en français",
-    "nameAr": "Nom en arabe (optionnel)",
-    "nameEn": "Nom en anglais (optionnel)",
+    "name": "Nom",
+    "namePlaceholder": "Ex: Voiture",
     "icon": "Icône",
-    "nameFrPlaceholder": "Ex: Voiture",
     "all": "Toutes"
   },
   "bills": {
@@ -253,7 +262,29 @@
       "en": "English"
     },
     "restartRequired": "Redémarrage requis",
-    "restartMessage": "Veuillez redémarrer l'application pour activer la langue arabe."
+    "restartMessage": "Veuillez redémarrer l'application pour activer la langue arabe.",
+    "sectionLegal": "Mentions légales",
+    "privacyPolicy": "Politique de confidentialité",
+    "termsOfService": "Conditions d'utilisation",
+    "viewOnline": "Voir la dernière version en ligne",
+    "aiInsights": "Insights IA",
+    "aiInsightsDescription": "Générer des analyses hebdomadaires de vos dépenses via Google Gemini. Nous envoyons uniquement les totaux agrégés par catégorie — jamais les noms de marchands ou les notes.",
+    "aiInsightsLearnMore": "Voir ce qui est envoyé"
+  },
+  "deleteAccount": {
+    "title": "Supprimer le compte",
+    "description": "Supprimer définitivement votre compte et toutes les données associées. Cette action est irréversible.",
+    "whatHappens": "Ce qui sera supprimé",
+    "bullet1": "Votre compte, e-mail et mot de passe",
+    "bullet2": "Toutes vos transactions, comptes, catégories et budgets",
+    "bullet3": "Tous vos insights IA et factures récurrentes",
+    "bullet4": "Les sauvegardes sont purgées sous 30 jours",
+    "accountLabel": "Connecté en tant que",
+    "confirmLabel": "Tapez {{keyword}} pour confirmer",
+    "confirmButton": "Supprimer mon compte",
+    "alertTitle": "Supprimer le compte ?",
+    "alertMessage": "Cela supprimera définitivement votre compte et toutes vos données. Cette action est irréversible.",
+    "errorMessage": "Impossible de supprimer votre compte. Réessayez ou contactez le support."
   },
   "more": {
     "title": "Plus",
